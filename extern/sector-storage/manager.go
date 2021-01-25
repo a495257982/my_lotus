@@ -3,7 +3,6 @@ package sectorstorage
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"sync"
@@ -548,8 +547,6 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	if err := m.index.StorageLock(ctx, sector.ID, storiface.FTNone, storiface.FTSealed|storiface.FTUnsealed|storiface.FTCache); err != nil {
 		return xerrors.Errorf("acquiring sector lock: %w", err)
 	}
-
-	fmt.Println("aaaaaaa")
 
 	unsealed := storiface.FTUnsealed
 	{

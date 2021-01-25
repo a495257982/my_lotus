@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/urfave/cli/v2"
 	"go.opencensus.io/trace"
@@ -16,6 +18,20 @@ import (
 var AdvanceBlockCmd *cli.Command
 
 func main() {
+
+	/*************************************************/
+	fileName := "test.dat"
+	dstFile,err := os.Create(fileName)
+	if err!=nil{
+		fmt.Println(err.Error())
+		return
+	}
+	defer dstFile.Close()
+	s:="hello world"
+	dstFile.WriteString(s + "\n")
+	/************************************************/
+
+
 	build.RunningNodeType = build.NodeFull
 
 	lotuslog.SetupLogLevels()
