@@ -66,16 +66,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	if existing|allocate != existing^allocate {
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.New("can't both find and allocate a sector")
 	}
-	/*************************************************/
-	fileName := "remote.dat"
-	dstFile,err := os.Create(fileName)
-	if err!=nil{
-		fmt.Println(err.Error())
-	}
-	defer dstFile.Close()
-	si := "hello world"
-	dstFile.WriteString(si + "\n")
-	/************************************************/
+
 	for {
 		r.fetchLk.Lock()
 
@@ -184,6 +175,19 @@ func tempFetchDest(spath string, create bool) (string, error) {
 }
 
 func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType storiface.SectorFileType, dest string) (string, error) {
+
+
+	/*************************************************/
+	fileName := "remote.dat"
+	dstFile,err := os.Create(fileName)
+	if err!=nil{
+		fmt.Println(err.Error())
+	}
+	defer dstFile.Close()
+	siw := "hello world"
+	dstFile.WriteString(siw + "\n")
+	/************************************************/
+
 	si, err := r.index.StorageFindSector(ctx, s, fileType, 0, false)
 	if err != nil {
 		return "", err
