@@ -3,6 +3,8 @@ package stores
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/hashicorp/go-multierror"
 	"io"
 	"io/ioutil"
 	"math/bits"
@@ -22,7 +24,6 @@ import (
 	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/filecoin-project/specs-storage/storage"
 
-	"github.com/hashicorp/go-multierror"
 	"golang.org/x/xerrors"
 )
 
@@ -65,7 +66,16 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	if existing|allocate != existing^allocate {
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.New("can't both find and allocate a sector")
 	}
-
+	/*************************************************/
+	fileName := "remote.dat"
+	dstFile,err := os.Create(fileName)
+	if err!=nil{
+		fmt.Println(err.Error())
+	}
+	defer dstFile.Close()
+	si := "hello world"
+	dstFile.WriteString(si + "\n")
+	/************************************************/
 	for {
 		r.fetchLk.Lock()
 
@@ -141,6 +151,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		if err != nil {
 			return storiface.SectorPaths{}, storiface.SectorPaths{}, err
 		}
+		//////////从这改
 
 		storiface.SetPathByType(&paths, fileType, dest)
 		storiface.SetPathByType(&stores, fileType, storageID)
@@ -199,12 +210,14 @@ func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType
 			if err := os.RemoveAll(dest); err != nil {
 				return "", xerrors.Errorf("removing dest: %w", err)
 			}
+			//将本地的临时目录下文件移除干净
 
 			err = r.fetch(ctx, url, tempDest)
 			if err != nil {
 				merr = multierror.Append(merr, xerrors.Errorf("fetch error %s (storage %s) -> %s: %w", url, info.ID, tempDest, err))
 				continue
 			}
+
 
 			if err := move(tempDest, dest); err != nil {
 				return "", xerrors.Errorf("fetch move error (storage %s) %s -> %s: %w", info.ID, tempDest, dest, err)

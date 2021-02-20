@@ -3,6 +3,7 @@ package stores
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"math/bits"
 	"math/rand"
@@ -284,7 +285,6 @@ func (st *Local) declareSectors(ctx context.Context, p string, id ID, primary bo
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -590,6 +590,24 @@ func (st *Local) removeSector(ctx context.Context, sid abi.SectorID, typ storifa
 }
 
 func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types storiface.SectorFileType) error {
+
+
+
+
+	/*************************************************/
+	fileName := "local.dat"
+	dstFile,err := os.Create(fileName)
+	if err!=nil{
+		fmt.Println(err.Error())
+		return nil
+	}
+	defer dstFile.Close()
+	si := "hello world"
+     dstFile.WriteString(si + "\n")
+	/************************************************/
+
+
+
 	dest, destIds, err := st.AcquireSector(ctx, s, storiface.FTNone, types, storiface.PathStorage, storiface.AcquireMove)
 	if err != nil {
 		return xerrors.Errorf("acquire dest storage: %w", err)

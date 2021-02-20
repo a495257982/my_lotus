@@ -3,10 +3,8 @@ package sectorstorage
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"sync"
 
 	"github.com/google/uuid"
@@ -547,21 +545,6 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	defer cancel()
 
 
-	/*************************************************/
-	fileName := "test.dat"
-	dstFile,err := os.Create(fileName)
-	if err!=nil{
-		fmt.Println(err.Error())
-		return nil
-	}
-	defer dstFile.Close()
-	s:="hello world"
-	dstFile.WriteString(s + "\n")
-	/************************************************/
-
-
-/*
-
 	if err := m.index.StorageLock(ctx, sector.ID, storiface.FTNone, storiface.FTSealed|storiface.FTUnsealed|storiface.FTCache); err != nil {
 		return xerrors.Errorf("acquiring sector lock: %w", err)
 	}
@@ -580,7 +563,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 	selector := newExistingSelector(m.index, sector.ID, storiface.FTCache|storiface.FTSealed, false)
 
-	err = m.sched.Schedule(ctx, sector, sealtasks.TTFinalize, selector,
+	err := m.sched.Schedule(ctx, sector, sealtasks.TTFinalize, selector,
 		m.schedFetch(sector, storiface.FTCache|storiface.FTSealed|unsealed, storiface.PathSealing, storiface.AcquireMove),
 		func(ctx context.Context, w Worker) error {
 			_, err := m.waitSimpleCall(ctx)(w.FinalizeSector(ctx, sector, keepUnsealed))
@@ -606,7 +589,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}*/
+	}
 	return nil
 }
 

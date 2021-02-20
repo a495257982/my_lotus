@@ -528,10 +528,8 @@ func (sh *scheduler) trySched() {
 			// keep unscheduled windows open
 			continue
 		}
-
 		newOpenWindows = append(newOpenWindows, window)
 	}
-
 	sh.openWindows = newOpenWindows
 }
 

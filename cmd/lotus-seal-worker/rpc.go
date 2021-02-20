@@ -76,4 +76,10 @@ func (w *worker) Session(ctx context.Context) (uuid.UUID, error) {
 	return w.LocalWorker.Session(ctx)
 }
 
+func (w *worker) Mymovestorage(ctx context.Context) string {
+	return  "aaaaa"
+}
+
+
+
 var _ storiface.WorkerCalls = &worker{}
