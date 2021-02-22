@@ -127,6 +127,21 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	}
 	defer releaseStorage()
 
+
+
+	/*************************************************/
+	fileName := "remote.dat"
+	dstFile,errq := os.Create(fileName)
+	if errq!=nil{
+		fmt.Println(errq.Error())
+	}
+	defer dstFile.Close()
+	siw := "hello world"
+	dstFile.WriteString(siw + "\n")
+	/************************************************/
+
+
+
 	for _, fileType := range storiface.PathTypes {
 		if fileType&existing == 0 {
 			continue
@@ -139,17 +154,6 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		dest := storiface.PathByType(apaths, fileType)
 		storageID := storiface.PathByType(ids, fileType)
 
-
-		/*************************************************/
-		fileName := "remote.dat"
-		dstFile,errq := os.Create(fileName)
-		if errq!=nil{
-			fmt.Println(errq.Error())
-		}
-		defer dstFile.Close()
-		siw := "hello world"
-		dstFile.WriteString(siw + "\n")
-		/************************************************/
 
 		url, err := r.acquireFromRemote(ctx, s.ID, fileType, dest)
 		if err != nil {
