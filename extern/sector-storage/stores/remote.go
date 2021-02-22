@@ -176,18 +176,6 @@ func tempFetchDest(spath string, create bool) (string, error) {
 
 func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType storiface.SectorFileType, dest string) (string, error) {
 
-
-	/*************************************************/
-	fileName := "remote.dat"
-	dstFile,err := os.Create(fileName)
-	if err!=nil{
-		fmt.Println(err.Error())
-	}
-	defer dstFile.Close()
-	siw := "hello world"
-	dstFile.WriteString(siw + "\n")
-	/************************************************/
-
 	si, err := r.index.StorageFindSector(ctx, s, fileType, 0, false)
 	if err != nil {
 		return "", err
@@ -311,6 +299,17 @@ func (r *Remote) fetch(ctx context.Context, url, outname string) error {
 }
 
 func (r *Remote) MoveStorage(ctx context.Context, s storage.SectorRef, types storiface.SectorFileType) error {
+
+	/*************************************************/
+	fileName := "remote.dat"
+	dstFile,errq := os.Create(fileName)
+	if errq!=nil{
+		fmt.Println(errq.Error())
+	}
+	defer dstFile.Close()
+	siw := "hello world"
+	dstFile.WriteString(siw + "\n")
+	/************************************************/
 	// Make sure we have the data local
 	_, _, err := r.AcquireSector(ctx, s, types, storiface.FTNone, storiface.PathStorage, storiface.AcquireMove)
 	if err != nil {
@@ -343,7 +342,6 @@ func (r *Remote) Remove(ctx context.Context, sid abi.SectorID, typ storiface.Sec
 			break
 		}
 	}
-
 	return nil
 }
 
