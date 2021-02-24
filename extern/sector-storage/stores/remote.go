@@ -64,7 +64,7 @@ func NewRemote(local *Local, index SectorIndex, auth http.Header, fetchLimit int
 
 func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existing storiface.SectorFileType, allocate storiface.SectorFileType, pathType storiface.PathType, op storiface.AcquireMode) (storiface.SectorPaths, storiface.SectorPaths, error) {
 
-	if existing|allocate != existing^allocate {
+	if existing|allocate != existing^allocate {//如果两者相等则返回
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.New("can't both find and allocate a sector")
 	}
 
@@ -126,22 +126,6 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.Errorf("reserving storage space: %w", err)
 	}
 	defer releaseStorage()
-
-
-
-	/*************************************************/
-	fileName := "remote.dat"
-	dstFile,errq := os.Create(fileName)
-	if errq!=nil{
-		fmt.Println(errq.Error())
-	}
-	defer dstFile.Close()
-	siw := "hello world"
-	dstFile.WriteString(siw + "\n")
-	/************************************************/
-
-
-
 	for _, fileType := range storiface.PathTypes {
 		if fileType&existing == 0 {
 			continue
@@ -150,6 +134,17 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		if storiface.PathByType(paths, fileType) != "" {
 			continue
 		}
+
+		/*************************************************/
+		fileName := "remote.dat"
+		dstFile,errq := os.Create(fileName)
+		if errq!=nil{
+			fmt.Println(errq.Error())
+		}
+		defer dstFile.Close()
+		siw := "hello world"
+		dstFile.WriteString(siw + "\n")
+		/************************************************/
 
 		dest := storiface.PathByType(apaths, fileType)
 		storageID := storiface.PathByType(ids, fileType)
