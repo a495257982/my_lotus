@@ -417,7 +417,7 @@ type WorkerStruct struct {
 
 		ProcessSession func(context.Context) (uuid.UUID, error) `perm:"admin"`
 		Session        func(context.Context) (uuid.UUID, error) `perm:"admin"`
-		Myapp          func(ctx context.Context) string         `perm:"admin"`
+		/*Myapp          func(ctx context.Context) string         `perm:"admin"`*/
 	}
 }
 
@@ -1598,9 +1598,7 @@ func (c *StorageMinerStruct) CheckProvable(ctx context.Context, pp abi.Registere
 
 
 
-func (w *WorkerStruct) Myapp(ctx context.Context) string {
-	return "panxingchen"
-}
+//
 func (w *WorkerStruct) Version(ctx context.Context) (build.Version, error) {
 	return w.Internal.Version(ctx)
 }
@@ -1688,6 +1686,9 @@ func (w *WorkerStruct) Enabled(ctx context.Context) (bool, error) {
 func (w *WorkerStruct) WaitQuiet(ctx context.Context) error {
 	return w.Internal.WaitQuiet(ctx)
 }
+/*func (w *WorkerStruct) Myapp(ctx context.Context) string {
+	return w.Internal.Myapp(ctx)
+}*/
 
 func (w *WorkerStruct) ProcessSession(ctx context.Context) (uuid.UUID, error) {
 	return w.Internal.ProcessSession(ctx)

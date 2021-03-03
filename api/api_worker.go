@@ -47,6 +47,6 @@ type WorkerAPI interface {
 	// Like ProcessSession, but returns an error when worker is disabled
 	Session(context.Context) (uuid.UUID, error)
 
-	Myapp(ctx context.Context) string
+	/*Myapp         (ctx context.Context) string*/
 
 }

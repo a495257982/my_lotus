@@ -40,7 +40,6 @@ var infoCmd = &cli.Command{
 		}
 		fmt.Printf("Session: %s\n", sess)
 
-		fmt.Print(api.Myapp(ctx))
 
 		enabled, err := api.Enabled(ctx)
 		if err != nil {
