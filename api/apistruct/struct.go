@@ -1692,9 +1692,7 @@ func (w *WorkerStruct) WaitQuiet(ctx context.Context) error {
 func (w *WorkerStruct) ProcessSession(ctx context.Context) (uuid.UUID, error) {
 	return w.Internal.ProcessSession(ctx)
 }
-func (w *WorkerStruct) ProcessSession(ctx context.Context) string {
-	return w.Internal.Myapp(ctx)
-}
+
 
 func (w *WorkerStruct) Session(ctx context.Context) (uuid.UUID, error) {
 	return w.Internal.Session(ctx)
