@@ -322,7 +322,6 @@ func (l *LocalWorker) Fetch(ctx context.Context, sector storage.SectorRef, fileT
 
 func (l *LocalWorker) SealPreCommit1(ctx context.Context, sector storage.SectorRef, ticket abi.SealRandomness, pieces []abi.PieceInfo) (storiface.CallID, error) {
 	return l.asyncCall(ctx, sector, SealPreCommit1, func(ctx context.Context, ci storiface.CallID) (interface{}, error) {
-
 		{
 			// cleanup previous failed attempts if they exist
 			if err := l.storage.Remove(ctx, sector.ID, storiface.FTSealed, true); err != nil {

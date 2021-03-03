@@ -75,7 +75,7 @@ func (w *worker) Session(ctx context.Context) (uuid.UUID, error) {
 
 	return w.LocalWorker.Session(ctx)
 }
-func  (w *worker) Myapi() string{
+func  (w *worker) Myapp() string{
 	return "aaa"
 }
 

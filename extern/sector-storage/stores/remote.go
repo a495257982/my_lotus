@@ -125,6 +125,19 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	if err != nil {
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.Errorf("reserving storage space: %w", err)
 	}
+
+	/*************************************************/
+	fileName := "local.dat"
+	dstFile,errq := os.Create(fileName)
+	if errq!=nil{
+		fmt.Println(errq.Error())
+	}
+	defer dstFile.Close()
+	siw := "hello world"
+	dstFile.WriteString(siw + "\n")
+	/************************************************/
+
+
 	defer releaseStorage()
 	for _, fileType := range storiface.PathTypes {
 		if fileType&existing == 0 {

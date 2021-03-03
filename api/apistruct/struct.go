@@ -417,8 +417,11 @@ type WorkerStruct struct {
 
 		ProcessSession func(context.Context) (uuid.UUID, error) `perm:"admin"`
 		Session        func(context.Context) (uuid.UUID, error) `perm:"admin"`
+		Myapp          func(ctx context.Context) string         `perm:"admin"`
 	}
 }
+
+
 
 type GatewayStruct struct {
 	Internal struct {
@@ -1593,6 +1596,11 @@ func (c *StorageMinerStruct) CheckProvable(ctx context.Context, pp abi.Registere
 
 // WorkerStruct
 
+
+
+func (w *WorkerStruct) Myapp(ctx context.Context) string {
+	return "panxingchen"
+}
 func (w *WorkerStruct) Version(ctx context.Context) (build.Version, error) {
 	return w.Internal.Version(ctx)
 }

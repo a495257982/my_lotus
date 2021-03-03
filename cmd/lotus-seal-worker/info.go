@@ -40,6 +40,7 @@ var infoCmd = &cli.Command{
 		}
 		fmt.Printf("Session: %s\n", sess)
 
+
 		enabled, err := api.Enabled(ctx)
 		if err != nil {
 			return xerrors.Errorf("checking worker status: %w", err)

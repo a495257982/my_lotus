@@ -536,7 +536,6 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 	if err != nil {
 		return nil, err
 	}
-
 	return out, waitErr
 }
 
