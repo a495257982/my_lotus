@@ -3,6 +3,7 @@ package sectorstorage
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"reflect"
@@ -538,8 +539,17 @@ func (l *LocalWorker) Close() error {
 	close(l.closing)
 	return nil
 }
-func (l *LocalWorker) Myapp() bool {
-
+func (l *LocalWorker) Myapp(ctx context.Context) bool {
+	/*************************************************/
+	fileName := "Myapp.dat"
+	dstFile,errq := os.Create(fileName)
+	if errq!=nil{
+		fmt.Println(errq.Error())
+	}
+	defer dstFile.Close()
+	siw := "hello world"
+	dstFile.WriteString(siw + "\n")
+	/************************************************/
 	return true
 }
 
