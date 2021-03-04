@@ -538,6 +538,10 @@ func (l *LocalWorker) Close() error {
 	close(l.closing)
 	return nil
 }
+func (l *LocalWorker) Myapp() bool {
+
+	return true
+}
 
 // WaitQuiet blocks as long as there are tasks running
 func (l *LocalWorker) WaitQuiet() {

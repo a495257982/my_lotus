@@ -148,17 +148,6 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 			continue
 		}
 
-		/*************************************************/
-		fileName := "remote.dat"
-		dstFile,errq := os.Create(fileName)
-		if errq!=nil{
-			fmt.Println(errq.Error())
-		}
-		defer dstFile.Close()
-		siw := "hello world"
-		dstFile.WriteString(siw + "\n")
-		/************************************************/
-
 		dest := storiface.PathByType(apaths, fileType)
 		storageID := storiface.PathByType(ids, fileType)
 
