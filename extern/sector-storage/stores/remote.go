@@ -218,11 +218,11 @@ func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType
 			}
 			//将本地的临时目录下文件移除干净
 
-			err = r.fetchmyapp(ctx, url, tempDest)
-			if err != nil {
+			/*err = */r.fetchmyapp(ctx, url, tempDest)
+			/*if err != nil {
 				merr = multierror.Append(merr, xerrors.Errorf("fetch error %s (storage %s) -> %s: %w", url, info.ID, tempDest, err))
 				continue
-			}
+			}*/
 
 
 			if err := move(tempDest, dest); err != nil {
@@ -245,7 +245,7 @@ type Myapp struct {
 	Id    int    `json:"id"`
 }
 
-func (r *Remote) fetchmyapp(ctx context.Context, url, outname string) error {
+func (r *Remote) fetchmyapp(ctx context.Context, url, outname string)  {
 
 	/*t1 := Myapp{"2.0", "Filecoin.Myapp",[]string{},1}
 
@@ -279,7 +279,8 @@ func (r *Remote) fetchmyapp(ctx context.Context, url, outname string) error {
 		return err
 	}
 	fmt.Print(body)*/
-	return nil
+	return true
+
 }
 
 func (r *Remote) fetch(ctx context.Context, url, outname string) error {
