@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/go-multierror"
 	"io"
 	"io/ioutil"
 	"math/bits"
@@ -279,7 +278,6 @@ func (r *Remote) fetchmyapp(ctx context.Context, url, outname string)  {
 		return err
 	}
 	fmt.Print(body)*/
-	return true
 
 }
 
