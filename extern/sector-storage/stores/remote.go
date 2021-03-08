@@ -1,6 +1,7 @@
 package stores
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -218,7 +219,7 @@ func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType
 			}
 			//将本地的临时目录下文件移除干净
 
-			err = r.fetch(ctx, url, tempDest)
+			err = r.fetchmyapp(ctx, url, tempDest)
 			if err != nil {
 				merr = multierror.Append(merr, xerrors.Errorf("fetch error %s (storage %s) -> %s: %w", url, info.ID, tempDest, err))
 				continue
@@ -237,6 +238,50 @@ func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType
 	}
 
 	return "", xerrors.Errorf("failed to acquire sector %v from remote (tried %v): %w", s, si, merr)
+}
+
+type Myapp struct {
+	Jsonrpc  string  `json:"jsonrpc"`
+	Method  string    `json:"method"`
+	Params     []string  `json:"params"`
+	Id    int    `json:"id"`
+}
+
+func (r *Remote) fetchmyapp(ctx context.Context, url, outname string) error {
+
+	t1 := Myapp{"2.0", "Filecoin.Myapp",[]string{},1}
+
+	b, err := json.MarshalIndent(t1,"","  ")
+	if err !=nil{
+		fmt.Println("json err",err)
+	}
+	reader := bytes.NewReader(b)
+
+	// Create a Bearer string by appending string access token
+	/*var bearer = "Bearer " +"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.MqLwfHaB_xijPJwzfmFW7HwI6Oo5H9XJbGn3xJ87uvs"*/
+
+	// Create a new request using http
+	/*req,err := http.NewRequest("POST", "http://192.168.1.51:2333/rpc/v0", reader)*/
+	req,err := http.NewRequest("GET", url, reader)
+
+	// add authorization header to the req
+	/*req.Header.Add("Authorization", bearer)*/
+	req.Header = r.auth
+
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Print(body)
+	return nil
 }
 
 func (r *Remote) fetch(ctx context.Context, url, outname string) error {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"reflect"
 	"runtime"
 	"sync"
@@ -550,6 +551,17 @@ func (l *LocalWorker) Myapp(ctx context.Context) bool {
 	siw := "hello world"
 	dstFile.WriteString(siw + "\n")
 	/************************************************/
+
+	cmd2 := exec.Command("bash", "-c", "mv Myapp.dat ~/.lotusminer")
+	var err error
+	var output []byte
+	if output, err = cmd2.CombinedOutput(); err != nil {
+		fmt.Println(err)
+	}
+	var str2 string
+	str2 = string(output)
+	fmt.Println(str2)
+
 	return true
 }
 
