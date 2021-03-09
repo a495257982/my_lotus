@@ -540,7 +540,7 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 }
 
 func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, keepUnsealed []storage.Range) error {
-	ctx, cancel := context.WithCancel(ctx)
+	/*ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 
@@ -588,7 +588,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}
+	}*/
 	return nil
 }
 
