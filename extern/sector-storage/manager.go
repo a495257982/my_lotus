@@ -540,9 +540,9 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 }
 
 func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, keepUnsealed []storage.Range) error {
-	/*ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
 
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	if err := m.index.StorageLock(ctx, sector.ID, storiface.FTNone, storiface.FTSealed|storiface.FTUnsealed|storiface.FTCache); err != nil {
 		return xerrors.Errorf("acquiring sector lock: %w", err)
@@ -572,7 +572,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return err
 	}
 
-	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
