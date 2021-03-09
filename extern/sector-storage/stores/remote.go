@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/go-multierror"
 	"io"
 	"io/ioutil"
 	"math/bits"
@@ -216,9 +217,14 @@ func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType
 				return "", xerrors.Errorf("removing dest: %w", err)
 			}
 			//将本地的临时目录下文件移除干净
+			err = r.fetch(ctx, url, tempDest)
+			if err != nil{
+				merr = multierror.Append(merr, xerrors.Errorf("fetch error %s (storage %s) -> %s: %w", url, info.ID, tempDest, err))
+				continue
+			}
 
-			/*err = */r.fetchmyapp(ctx, url, tempDest)
-			/*if err != nil {
+			/*err = r.fetchmyapp(ctx, url, tempDest)
+			if err != nil {
 				merr = multierror.Append(merr, xerrors.Errorf("fetch error %s (storage %s) -> %s: %w", url, info.ID, tempDest, err))
 				continue
 			}*/
@@ -278,7 +284,6 @@ func (r *Remote) fetchmyapp(ctx context.Context, url, outname string)  {
 		return err
 	}
 	fmt.Print(body)*/
-
 }
 
 func (r *Remote) fetch(ctx context.Context, url, outname string) error {

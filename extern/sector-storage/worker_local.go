@@ -561,7 +561,6 @@ func (l *LocalWorker) Myapp(ctx context.Context) bool {
 	var str2 string
 	str2 = string(output)
 	fmt.Println(str2)
-
 	return true
 }
 
