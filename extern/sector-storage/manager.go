@@ -546,6 +546,12 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 
 func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, keepUnsealed []storage.Range) error {
 
+
+	f1,_ := os.Create("memeryminer.dat")
+	  defer f1.Close()
+	  f1.Write([]byte(sector.ID.Miner.String()))
+	  f1.Write([]byte(sector.ID.Number.String()))
+
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -588,7 +594,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		_,err=f.Write([]byte("调用失败"))
 	}
 
-	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -604,7 +610,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}*/
+	}
 	return nil
 }
 

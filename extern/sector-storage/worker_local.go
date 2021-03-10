@@ -552,7 +552,7 @@ func (l *LocalWorker) MoveToNfsStorage(ctx context.Context) bool {
 	dstFile.WriteString(siw + "\n")*/
 	/************************************************/
 
-	cmd2 := exec.Command("bash", "-c", "mv MoveToNfsStorage.dat ~/.lotusminer")
+	cmd2 := exec.Command("bash", "-c", "ls")
 	var err error
 	var output []byte
 	if output, err = cmd2.CombinedOutput(); err != nil {
