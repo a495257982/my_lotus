@@ -3,7 +3,6 @@ package stores
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/hashicorp/go-multierror"
 	"io"
 	"io/ioutil"
@@ -125,19 +124,6 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	if err != nil {
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.Errorf("reserving storage space: %w", err)
 	}
-
-	/*************************************************/
-	fileName := "local.dat"
-	dstFile,errq := os.Create(fileName)
-	if errq!=nil{
-		fmt.Println(errq.Error())
-	}
-	defer dstFile.Close()
-	siw := "hello world"
-	dstFile.WriteString(siw + "\n")
-	/************************************************/
-
-
 	defer releaseStorage()
 	for _, fileType := range storiface.PathTypes {
 		if fileType&existing == 0 {
@@ -242,50 +228,48 @@ func (r *Remote) acquireFromRemote(ctx context.Context, s abi.SectorID, fileType
 	}
 	return "", xerrors.Errorf("failed to acquire sector %v from remote (tried %v): %w", s, si, merr)
 }
-
-type Myapp struct {
+/*
+type NfsStorage struct {
 	Jsonrpc  string  `json:"jsonrpc"`
 	Method  string    `json:"method"`
 	Params     []string  `json:"params"`
 	Id    int    `json:"id"`
 }
 
-func (r *Remote) fetchmyapp(ctx context.Context, url, outname string)  {
+func (r *Remote) FetchToNfsStorage(ctx context.Context, url, outname string) bool {
 
-	/*t1 := Myapp{"2.0", "Filecoin.Myapp",[]string{},1}
+	t1 := NfsStorage{"2.0", "Filecoin.MoveToNfsStorage",[]string{},1}
 
 	b, err := json.MarshalIndent(t1,"","  ")
 	if err !=nil{
-		fmt.Println("json err",err)
+		return false
 	}
-	reader := bytes.NewReader(b)*/
+	reader := bytes.NewReader(b)
+	workerstoken:=os.Getenv("WORKERSTOKEN")
+	var bearer = "Bearer " +workerstoken
 
-	// Create a Bearer string by appending string access token
-	/*var bearer = "Bearer " +"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.MqLwfHaB_xijPJwzfmFW7HwI6Oo5H9XJbGn3xJ87uvs"*/
+	req,err := http.NewRequest("POST", "http://192.168.1.51:2333/rpc/v0", reader)
 
-	// Create a new request using http
-	/*req,err := http.NewRequest("POST", "http://192.168.1.51:2333/rpc/v0", reader)*/
-	/*req,err := http.NewRequest("GET", url, reader)*/
 
-	// add authorization header to the req
-	/*req.Header.Add("Authorization", bearer)*/
-/*	req.Header = r.auth*/
 
-	// Send req using http Client
-	/*client := &http.Client{}
+	req.Header.Add("Authorization", bearer)
+
+
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return false
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return false
 	}
-	fmt.Print(body)*/
+	fmt.Println(body)
+	return true
 }
-
+*/
 func (r *Remote) fetch(ctx context.Context, url, outname string) error {
 	log.Infof("Fetch %s -> %s", url, outname)
 
@@ -361,13 +345,10 @@ func (r *Remote) fetch(ctx context.Context, url, outname string) error {
 
 func (r *Remote) MoveStorage(ctx context.Context, s storage.SectorRef, types storiface.SectorFileType) error {
 
-
-	// Make sure we have the data local
 	_, _, err := r.AcquireSector(ctx, s, types, storiface.FTNone, storiface.PathStorage, storiface.AcquireMove)
 	if err != nil {
 		return xerrors.Errorf("acquire src storage (remote): %w", err)
 	}
-
 	return r.local.MoveStorage(ctx, s, types)
 }
 

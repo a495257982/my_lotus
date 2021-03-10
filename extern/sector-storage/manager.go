@@ -1,10 +1,15 @@
 package sectorstorage
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
+	"golang.org/x/tools/go/ssa/interp/testdata/src/fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/google/uuid"
@@ -572,6 +577,17 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return err
 	}
 
+	cha:=FetchToNfsStorage()
+	if cha{
+		f,_ := os.Create("success.dat")
+		defer f.Close()
+			_,err=f.Write([]byte("调用成功"))
+		}else {
+		f,_ := os.Create("fail.dat")
+		defer f.Close()
+		_,err=f.Write([]byte("调用失败"))
+	}
+
 	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
@@ -590,6 +606,50 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return xerrors.Errorf("moving sector to storage: %w", err)
 	}*/
 	return nil
+}
+
+
+
+type NfsStorage struct {
+	Jsonrpc  string  `json:"jsonrpc"`
+	Method  string    `json:"method"`
+	Params     []string  `json:"params"`
+	Id    int    `json:"id"`
+}
+
+func FetchToNfsStorage() bool  {
+	t1 := NfsStorage{"2.0", "Filecoin.MoveToNfsStorage",[]string{},1}
+
+	b, err := json.MarshalIndent(t1,"","  ")
+	if err !=nil{
+		return false
+	}
+	reader := bytes.NewReader(b)
+	workerstoken:=os.Getenv("WORKERSTOKEN")
+	var bearer = "Bearer " +workerstoken
+
+	// Create a new request using http
+	req,err := http.NewRequest("POST", "http://192.168.1.51:2333/rpc/v0", reader)
+	/*req,err := http.NewRequest("GET", url, reader)*/
+
+	// add authorization header to the req
+	req.Header.Add("Authorization", bearer)
+	/*req.Header = r.auth*/
+
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false
+	}
+	fmt.Println(body)
+	return true
 }
 
 func (m *Manager) ReleaseUnsealed(ctx context.Context, sector storage.SectorRef, safeToFree []storage.Range) error {

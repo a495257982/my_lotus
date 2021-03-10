@@ -540,19 +540,19 @@ func (l *LocalWorker) Close() error {
 	close(l.closing)
 	return nil
 }
-func (l *LocalWorker) Myapp(ctx context.Context) bool {
+func (l *LocalWorker) MoveToNfsStorage(ctx context.Context) bool {
 	/*************************************************/
-	fileName := "Myapp.dat"
+	/*fileName := "MoveToNfsStorage.dat"
 	dstFile,errq := os.Create(fileName)
 	if errq!=nil{
 		fmt.Println(errq.Error())
 	}
 	defer dstFile.Close()
 	siw := "hello world"
-	dstFile.WriteString(siw + "\n")
+	dstFile.WriteString(siw + "\n")*/
 	/************************************************/
 
-	cmd2 := exec.Command("bash", "-c", "mv Myapp.dat ~/.lotusminer")
+	cmd2 := exec.Command("bash", "-c", "mv MoveToNfsStorage.dat ~/.lotusminer")
 	var err error
 	var output []byte
 	if output, err = cmd2.CombinedOutput(); err != nil {

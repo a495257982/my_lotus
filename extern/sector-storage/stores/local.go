@@ -590,8 +590,6 @@ func (st *Local) removeSector(ctx context.Context, sid abi.SectorID, typ storifa
 
 func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types storiface.SectorFileType) error {
 
-
-
 	dest, destIds, err := st.AcquireSector(ctx, s, storiface.FTNone, types, storiface.PathStorage, storiface.AcquireMove)
 	if err != nil {
 		return xerrors.Errorf("acquire dest storage: %w", err)
