@@ -542,14 +542,14 @@ func (l *LocalWorker) Close() error {
 }
 func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 	/*************************************************/
-	fileName := "MoveToNfsStorage.dat"
+/*	fileName := "MoveToNfsStorage.dat"
 	dstFile,errq := os.Create(fileName)
 	if errq!=nil{
 		fmt.Println(errq.Error())
 	}
 	defer dstFile.Close()
 	siw := "hello world"
-	dstFile.WriteString(siw + "\n")
+	dstFile.WriteString(siw + "\n")*/
 	/************************************************/
 	a:=sector.Number
 	b:=sector.Miner

@@ -616,6 +616,12 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 func FetchToNfsStorage(sector storage.SectorRef) bool  {
 
+
+	/*si, err := r.index.StorageFindSector(ctx, s, fileType, 0, false)
+	if err != nil {
+		return "", err
+	}*/
+
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
 	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
@@ -636,6 +642,7 @@ func FetchToNfsStorage(sector storage.SectorRef) bool  {
 
 	// add authorization header to the req
 	req.Header.Add("Authorization", bearer)
+	req.Header.Set("Content-Type","application/json")
 
 	// Send req using http Client
 	client := &http.Client{}
@@ -651,7 +658,8 @@ func FetchToNfsStorage(sector storage.SectorRef) bool  {
 		fmt.Println("Error while reading the response bytes:", err)
 		return false
 	}
-	fmt.Println(string([]byte(body)))
+	fmt.Println(body)
+
 
 	/*t1 := NfsStorage{"2.0", "Filecoin.MoveToNfsStorage",[]string{},1}
 
