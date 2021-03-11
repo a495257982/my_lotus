@@ -3,6 +3,7 @@ package sectorstorage
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -541,30 +542,36 @@ func (l *LocalWorker) Close() error {
 }
 func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 	/*************************************************/
-	/*fileName := "MoveToNfsStorage.dat"
+	fileName := "MoveToNfsStorage.dat"
 	dstFile,errq := os.Create(fileName)
 	if errq!=nil{
 		fmt.Println(errq.Error())
 	}
 	defer dstFile.Close()
 	siw := "hello world"
-	dstFile.WriteString(siw + "\n")*/
+	dstFile.WriteString(siw + "\n")
 	/************************************************/
 	a:=sector.Number
 	b:=sector.Miner
 	movecache:="mv ~/.lotusworker/cache/s-t0"+b.String()+"-"+a.String() +"  /data/cache"
 	movesealed:="mv ~/.lotusworker/sealed/s-t0"+b.String()+"-"+a.String() +"  /data/sealed"
 
-	/*mvcache:= */exec.Command("bash", "-c", movecache)
-	/*mvsealed:=*/ exec.Command("bash", "-c", movesealed)
-	/*var err error
+	mvcache:= exec.Command("bash", "-c", movecache)
+	mvsealed:= exec.Command("bash", "-c", movesealed)
+	var err error
 	var output []byte
-	if output, err = cmd2.CombinedOutput(); err != nil {
+	if output, err = mvcache.CombinedOutput(); err != nil {
 		fmt.Println(err)
 	}
-	var str2 string
-	str2 = string(output)
-	fmt.Println(str2)*/
+	str2 := string(output)
+	fmt.Println(str2)
+	var err1 error
+	var output1 []byte
+	if output1, err = mvsealed.CombinedOutput(); err != nil {
+		fmt.Println(err1)
+	}
+	str3 := string(output1)
+	fmt.Println(str3)
 	return true
 }
 

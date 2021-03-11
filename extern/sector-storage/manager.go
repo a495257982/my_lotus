@@ -614,15 +614,6 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	return nil
 }
 
-
-
-type NfsStorage struct {
-	Jsonrpc  string  `json:"jsonrpc"`
-	Method  string    `json:"method"`
-	Params     []string  `json:"params"`
-	Id    int    `json:"id"`
-}
-
 func FetchToNfsStorage(sector storage.SectorRef) bool  {
 
 	mapInstance := make(map[string]interface{})
@@ -632,14 +623,13 @@ func FetchToNfsStorage(sector storage.SectorRef) bool  {
 	mapInstance["id"] = 1
 	jsonStr, err := json.Marshal(mapInstance)
 	if err != nil {
-
+      return false
 	}
-	fmt.Println(string(jsonStr))
 	reader := bytes.NewReader(jsonStr)
 
 	// Create a Bearer string by appending string access token
 	workerstoken:=os.Getenv("WORKERSTOKEN")
-	var bearer = "Bearer " +workerstoken
+	var bearer = "Bearer" +workerstoken
 
 	// Create a new request using http
 	req,err := http.NewRequest("POST", "http://192.168.1.7:2333/rpc/v0", reader)
