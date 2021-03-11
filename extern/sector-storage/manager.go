@@ -629,7 +629,7 @@ func FetchToNfsStorage(sector storage.SectorRef) bool  {
 
 	// Create a Bearer string by appending string access token
 	workerstoken:=os.Getenv("WORKERSTOKEN")
-	var bearer = "Bearer" +workerstoken
+	var bearer = "Bearer  " +workerstoken
 
 	// Create a new request using http
 	req,err := http.NewRequest("POST", "http://192.168.1.7:2333/rpc/v0", reader)
