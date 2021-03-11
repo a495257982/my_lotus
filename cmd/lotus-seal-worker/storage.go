@@ -85,7 +85,6 @@ var storageAttachCmd = &cli.Command{
 				CanSeal:  cctx.Bool("seal"),
 				CanStore: cctx.Bool("store"),
 			}
-
 			if !(cfg.CanStore || cfg.CanSeal) {
 				return xerrors.Errorf("must specify at least one of --store of --seal")
 			}
@@ -99,7 +98,6 @@ var storageAttachCmd = &cli.Command{
 				return xerrors.Errorf("persisting storage metadata (%s): %w", filepath.Join(p, metaFile), err)
 			}
 		}
-
 		return nodeApi.StorageAddLocal(ctx, p)
 	},
 }

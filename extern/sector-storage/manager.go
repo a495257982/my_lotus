@@ -583,7 +583,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return err
 	}
 
-	cha:=FetchToNfsStorage()
+	cha:=FetchToNfsStorage(sector)
 	if cha{
 		f,_ := os.Create("success.dat")
 		defer f.Close()
@@ -594,7 +594,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		_,err=f.Write([]byte("调用失败"))
 	}
 
-	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -610,7 +610,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}
+	}*/
 	return nil
 }
 
@@ -623,8 +623,47 @@ type NfsStorage struct {
 	Id    int    `json:"id"`
 }
 
-func FetchToNfsStorage() bool  {
-	t1 := NfsStorage{"2.0", "Filecoin.MoveToNfsStorage",[]string{},1}
+func FetchToNfsStorage(sector storage.SectorRef) bool  {
+
+	mapInstance := make(map[string]interface{})
+	mapInstance["jsonrpc"] = "2.0"
+	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
+	mapInstance["params"] = []map[string]interface{}{{"miner": sector.ID.Miner, "Number": sector.ID.Number}}
+	mapInstance["id"] = 1
+	jsonStr, err := json.Marshal(mapInstance)
+	if err != nil {
+
+	}
+	fmt.Println(string(jsonStr))
+	reader := bytes.NewReader(jsonStr)
+
+	// Create a Bearer string by appending string access token
+	workerstoken:=os.Getenv("WORKERSTOKEN")
+	var bearer = "Bearer " +workerstoken
+
+	// Create a new request using http
+	req,err := http.NewRequest("POST", "http://192.168.1.7:2333/rpc/v0", reader)
+
+	// add authorization header to the req
+	req.Header.Add("Authorization", bearer)
+
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error on response.\n[ERROR] -", err)
+		return false
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error while reading the response bytes:", err)
+		return false
+	}
+	fmt.Println(string([]byte(body)))
+
+	/*t1 := NfsStorage{"2.0", "Filecoin.MoveToNfsStorage",[]string{},1}
 
 	b, err := json.MarshalIndent(t1,"","  ")
 	if err !=nil{
@@ -634,15 +673,13 @@ func FetchToNfsStorage() bool  {
 	workerstoken:=os.Getenv("WORKERSTOKEN")
 	var bearer = "Bearer " +workerstoken
 
-	// Create a new request using http
+
 	req,err := http.NewRequest("POST", "http://192.168.1.51:2333/rpc/v0", reader)
-	/*req,err := http.NewRequest("GET", url, reader)*/
 
-	// add authorization header to the req
 	req.Header.Add("Authorization", bearer)
-	/*req.Header = r.auth*/
 
-	// Send req using http Client
+
+
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -654,7 +691,7 @@ func FetchToNfsStorage() bool  {
 	if err != nil {
 		return false
 	}
-	fmt.Println(body)
+	fmt.Println(body)*/
 	return true
 }
 

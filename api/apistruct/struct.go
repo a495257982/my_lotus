@@ -417,7 +417,7 @@ type WorkerStruct struct {
 
 		ProcessSession func(context.Context) (uuid.UUID, error) `perm:"admin"`
 		Session        func(context.Context) (uuid.UUID, error) `perm:"admin"`
-		MoveToNfsStorage          func(ctx context.Context)   bool    `perm:"admin"`
+		MoveToNfsStorage          func(ctx context.Context, sector abi.SectorID)   bool    `perm:"admin"`
 	}
 }
 
@@ -1687,8 +1687,8 @@ func (w *WorkerStruct) Enabled(ctx context.Context) (bool, error) {
 func (w *WorkerStruct) WaitQuiet(ctx context.Context) error {
 	return w.Internal.WaitQuiet(ctx)
 }
-func (w *WorkerStruct) MoveToNfsStorage(ctx context.Context) bool{
-	return w.Internal.MoveToNfsStorage(ctx)
+func (w *WorkerStruct) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool{
+	return w.Internal.MoveToNfsStorage(ctx,sector)
 }
 
 func (w *WorkerStruct) ProcessSession(ctx context.Context) (uuid.UUID, error) {
