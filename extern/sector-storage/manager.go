@@ -602,7 +602,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
-
+/*
 			f,err := os.Create( "urldata" )
 
 			defer f.Close()
@@ -613,7 +613,8 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 				_,err=f.Write([]byte(url))
 
 				fmt.Println( err.Error() )
-			}
+			}*/
+			fmt.Println(url)
 		}
 	}
 
