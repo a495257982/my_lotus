@@ -271,7 +271,6 @@ func (i *Index) StorageFindSector(ctx context.Context, s abi.SectorID, ft storif
 			isprimary[id.storage] = isprimary[id.storage] || id.primary
 		}
 	}
-
 	out := make([]SectorStorageInfo, 0, len(storageIDs))
 
 	for id, n := range storageIDs {

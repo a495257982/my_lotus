@@ -546,12 +546,6 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 
 func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, keepUnsealed []storage.Range) error {
 
-
-	f1,_ := os.Create("memeryminer.dat")
-	  defer f1.Close()
-	  f1.Write([]byte(sector.ID.Miner.String()))
-	  f1.Write([]byte(sector.ID.Number.String()))
-
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -583,21 +577,10 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return err
 	}
 
-	cha:=FetchToNfsStorage(sector)
-	if cha{
-		f,_ := os.Create("success.dat")
-		defer f.Close()
-			_,err=f.Write([]byte("调用成功"))
-		}else {
-		f,_ := os.Create("fail.dat")
-		defer f.Close()
-		_,err=f.Write([]byte("调用失败"))
-	}
-
 
 	/************************************************************************************************************/
-/*
-	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+
+	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -615,12 +598,44 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return xerrors.Errorf("moving sector to storage: %w", err)
 	}*/
 	/************************************************************************************************************/
-    m.FindStorageUrl(ctx,sector.ID)
+
+	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
+	for _, info := range si {
+		for _, url := range info.URLs{
+
+			f,err := os.Create( "urldata" )
+
+			defer f.Close()
+			if err !=nil {
+				fmt.Println( err.Error() )
+
+			} else {
+				_,err=f.Write([]byte(url))
+
+				fmt.Println( err.Error() )
+			}
+		}
+	}
+
 	/************************************************************************************************************/
+
+	cha:=FetchToNfsStorage(sector)
+	if cha{
+		f,_ := os.Create("success.dat")
+		defer f.Close()
+		_,err=f.Write([]byte("调用成功"))
+	}else {
+		f,_ := os.Create("fail.dat")
+		defer f.Close()
+		_,err=f.Write([]byte("调用失败"))
+	}
+
+	/************************************************************************************************************/
+
 	return nil
 }
 
-type ID string
+/*type ID string
 
 func (m *Manager)FindStorageUrl(ctx context.Context, s abi.SectorID)  {
 
@@ -639,7 +654,6 @@ func (m *Manager)FindStorageUrl(ctx context.Context, s abi.SectorID)  {
 			f,err := os.Create( "urldata" )
 
 			defer f.Close()
-
 			if err !=nil {
 				fmt.Println( err.Error() )
 
@@ -648,12 +662,11 @@ func (m *Manager)FindStorageUrl(ctx context.Context, s abi.SectorID)  {
 
 				fmt.Println( err.Error() )
 			}
-
 		}
 	}
 }
 
-
+*/
 
 func FetchToNfsStorage(sector storage.SectorRef) bool  {
 
