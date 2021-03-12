@@ -602,80 +602,34 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
-/*
-			f,err := os.Create( "urldata" )
-
-			defer f.Close()
-			if err !=nil {
-				fmt.Println( err.Error() )
-
-			} else {
-				_,err=f.Write([]byte(url))
-
-				fmt.Println( err.Error() )
-			}*/
-			fmt.Println(url)
-		}
-	}
-
-	/************************************************************************************************************/
-
-	cha:=FetchToNfsStorage(sector)
-	if cha{
-		f,_ := os.Create("success.dat")
-		defer f.Close()
-		_,err=f.Write([]byte("调用成功"))
-	}else {
-		f,_ := os.Create("fail.dat")
-		defer f.Close()
-		_,err=f.Write([]byte("调用失败"))
-	}
-
-	/************************************************************************************************************/
-
-	return nil
-}
-
-/*type ID string
-
-func (m *Manager)FindStorageUrl(ctx context.Context, s abi.SectorID)  {
-
-
-	si, err :=m.index.StorageFindSector(ctx,s,storiface.FTSealed,0,false)
-	if err != nil {
-		return
-	}
-	if len(si) == 0 {
-		return
-	}
-
-	for _, info := range si {
-		for _, url := range info.URLs{
-
-			f,err := os.Create( "urldata" )
-
-			defer f.Close()
-			if err !=nil {
-				fmt.Println( err.Error() )
-
-			} else {
-				_,err=f.Write([]byte(url))
-
-				fmt.Println( err.Error() )
+			l1:=url[:23]
+			l2:=l1+"/rpc/v0"
+			cha:=FetchToNfsStorage(sector,l2)
+			if cha{
+				f,_ := os.Create("success.dat")
+				defer f.Close()
+				_,err=f.Write([]byte("调用成功"))
+			}else {
+				f,_ := os.Create("fail.dat")
+				defer f.Close()
+				_,err=f.Write([]byte("调用失败"))
 			}
 		}
 	}
+	/************************************************************************************************************/
+	return nil
 }
 
-*/
 
-func FetchToNfsStorage(sector storage.SectorRef) bool  {
+
+func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
 
 
 	/*si, err := r.index.StorageFindSector(ctx, s, fileType, 0, false)
 	if err != nil {
 		return "", err
 	}*/
+
 
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
@@ -692,7 +646,7 @@ func FetchToNfsStorage(sector storage.SectorRef) bool  {
 	workerstoken:=os.Getenv("WORKERSTOKEN")
 	var bearer = "Bearer " +workerstoken
 	// Create a new request using http
-	req,err := http.NewRequest("POST", "http://192.168.1.7:2333/rpc/v0", reader)
+	req,err := http.NewRequest("POST", URL, reader)
 
 	// add authorization header to the req
 	req.Header.Add("Authorization", bearer)
