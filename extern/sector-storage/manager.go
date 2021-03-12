@@ -594,7 +594,10 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		_,err=f.Write([]byte("调用失败"))
 	}
 
-	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+
+	/************************************************************************************************************/
+/*
+	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -611,7 +614,43 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
 	}*/
+	/************************************************************************************************************/
+    m.FindStorageUrl(ctx,sector.ID)
+	/************************************************************************************************************/
 	return nil
+}
+
+type ID string
+
+func (m *Manager)FindStorageUrl(ctx context.Context, s abi.SectorID)  {
+
+
+	si, err :=m.index.StorageFindSector(ctx,s,storiface.FTSealed,0,false)
+	if err != nil {
+		return
+	}
+	if len(si) == 0 {
+		return
+	}
+
+	for _, info := range si {
+		for _, url := range info.URLs{
+
+			f,err := os.Create( "urldata" )
+
+			defer f.Close()
+
+			if err !=nil {
+				fmt.Println( err.Error() )
+
+			} else {
+				_,err=f.Write([]byte(url))
+
+				fmt.Println( err.Error() )
+			}
+
+		}
+	}
 }
 
 
@@ -638,7 +677,6 @@ func FetchToNfsStorage(sector storage.SectorRef) bool  {
 	// Create a Bearer string by appending string access token
 	workerstoken:=os.Getenv("WORKERSTOKEN")
 	var bearer = "Bearer " +workerstoken
-
 	// Create a new request using http
 	req,err := http.NewRequest("POST", "http://192.168.1.7:2333/rpc/v0", reader)
 
