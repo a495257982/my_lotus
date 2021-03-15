@@ -605,7 +605,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		for _, url := range info.URLs{
 			a:=strings.Index(url,"2333")
 			l1:=url[:a]
-			l2:=l1+"/rpc/v0"
+			l2:=l1+"2333/rpc/v0"
 			cha:=FetchToNfsStorage(sector,l2)
 			if cha{
 				f,_ := os.Create("success.dat")
