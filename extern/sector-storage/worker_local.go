@@ -540,6 +540,7 @@ func (l *LocalWorker) Close() error {
 	close(l.closing)
 	return nil
 }
+// panxingchen
 func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 
 	a:=sector.Number
@@ -565,6 +566,7 @@ func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID)
 	fmt.Println(str3)
 	return true
 }
+// panxingchen
 
 // WaitQuiet blocks as long as there are tasks running
 func (l *LocalWorker) WaitQuiet() {

@@ -599,7 +599,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		return xerrors.Errorf("moving sector to storage: %w", err)
 	}*/
 	/************************************************************************************************************/
-
+	// panxingchen
 	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
@@ -618,12 +618,14 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			}
 		}
 	}
+	// panxingchen
 	/************************************************************************************************************/
 	return nil
 }
 
 
 
+// panxingchen
 func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
 
 	mapInstance := make(map[string]interface{})
@@ -662,9 +664,11 @@ func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
 		return false
 	}
 	fmt.Println(string(body))
+	// Send req using http Client
+	// Send req using http Client
 	return true
 }
-
+// panxingchen
 func (m *Manager) ReleaseUnsealed(ctx context.Context, sector storage.SectorRef, safeToFree []storage.Range) error {
 	log.Warnw("ReleaseUnsealed todo")
 	return nil

@@ -46,7 +46,8 @@ type WorkerAPI interface {
 
 	// Like ProcessSession, but returns an error when worker is disabled
 	Session(context.Context) (uuid.UUID, error)
-
+	// panxingchen
 	MoveToNfsStorage         (ctx context.Context, sector abi.SectorID)  bool
+	// panxingchen
 
 }
