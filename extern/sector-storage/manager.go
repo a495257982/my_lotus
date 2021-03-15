@@ -626,13 +626,6 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
 
-
-	/*si, err := r.index.StorageFindSector(ctx, s, fileType, 0, false)
-	if err != nil {
-		return "", err
-	}*/
-
-
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
 	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
@@ -668,38 +661,7 @@ func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
 		fmt.Println("Error while reading the response bytes:", err)
 		return false
 	}
-	fmt.Println(body)
-
-
-	/*t1 := NfsStorage{"2.0", "Filecoin.MoveToNfsStorage",[]string{},1}
-
-	b, err := json.MarshalIndent(t1,"","  ")
-	if err !=nil{
-		return false
-	}
-	reader := bytes.NewReader(b)
-	workerstoken:=os.Getenv("WORKERSTOKEN")
-	var bearer = "Bearer " +workerstoken
-
-
-	req,err := http.NewRequest("POST", "http://192.168.1.51:2333/rpc/v0", reader)
-
-	req.Header.Add("Authorization", bearer)
-
-
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return false
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return false
-	}
-	fmt.Println(body)*/
+	fmt.Println(string(body))
 	return true
 }
 

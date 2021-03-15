@@ -541,25 +541,12 @@ func (l *LocalWorker) Close() error {
 	return nil
 }
 func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
-	/*************************************************/
-/*	fileName := "MoveToNfsStorage.dat"
-	dstFile,errq := os.Create(fileName)
-	if errq!=nil{
-		fmt.Println(errq.Error())
-	}
-	defer dstFile.Close()
-	siw := "hello world"
-	dstFile.WriteString(siw + "\n")*/
-	/************************************************/
+
 	a:=sector.Number
 	b:=sector.Miner
-
 	Path:=os.Getenv("MOVEPATH")
-
-
 	movecache:="mv ~/.lotusworker/cache/s-t0"+b.String()+"-"+a.String() +"   "+Path+"/cache"
 	movesealed:="mv ~/.lotusworker/sealed/s-t0"+b.String()+"-"+a.String() +"  "+Path+"/sealed"
-
 	mvcache:= exec.Command("bash", "-c", movecache)
 	mvsealed:= exec.Command("bash", "-c", movesealed)
 	var err error
