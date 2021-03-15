@@ -553,8 +553,12 @@ func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID)
 	/************************************************/
 	a:=sector.Number
 	b:=sector.Miner
-	movecache:="mv ~/.lotusworker/cache/s-t0"+b.String()+"-"+a.String() +"  /data/cache"
-	movesealed:="mv ~/.lotusworker/sealed/s-t0"+b.String()+"-"+a.String() +"  /data/sealed"
+
+	Path:=os.Getenv("MOVEPATH")
+
+
+	movecache:="mv ~/.lotusworker/cache/s-t0"+b.String()+"-"+a.String() +"   "+Path+"/cache"
+	movesealed:="mv ~/.lotusworker/sealed/s-t0"+b.String()+"-"+a.String() +"  "+Path+"/sealed"
 
 	mvcache:= exec.Command("bash", "-c", movecache)
 	mvsealed:= exec.Command("bash", "-c", movesealed)

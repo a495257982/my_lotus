@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -602,7 +603,8 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
-			l1:=url[:23]
+			a:=strings.Index(url,"2333")
+			l1:=url[:a]
 			l2:=l1+"/rpc/v0"
 			cha:=FetchToNfsStorage(sector,l2)
 			if cha{
