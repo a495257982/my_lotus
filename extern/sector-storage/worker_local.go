@@ -548,7 +548,6 @@ func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID)
 	Path:=os.Getenv("MOVEPATH")
 	MinerPath:=os.Getenv("MINERSTORAGE")
 
-	fmt.Println(MinerPath)
 	movecache:="mv "+MinerPath+"/cache/s-t0"+b.String()+"-"+a.String() +"   "+Path+"/cache"
 	movesealed:="mv "+MinerPath+"/sealed/s-t0"+b.String()+"-"+a.String() +"  "+Path+"/sealed"
 	mvcache:= exec.Command("bash", "-c", movecache)

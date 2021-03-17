@@ -216,41 +216,34 @@ loop:
 			primary: primary,
 		})
 	}
-
 	return nil
 }
 
 func (i *Index) StorageDropSector(ctx context.Context, storageID ID, s abi.SectorID, ft storiface.SectorFileType) error {
 	i.lk.Lock()
 	defer i.lk.Unlock()
-
 	for _, fileType := range storiface.PathTypes {
 		if fileType&ft == 0 {
 			continue
 		}
-
 		d := Decl{s, fileType}
 
 		if len(i.sectors[d]) == 0 {
 			return nil
 		}
-
 		rewritten := make([]*declMeta, 0, len(i.sectors[d])-1)
 		for _, sid := range i.sectors[d] {
 			if sid.storage == storageID {
 				continue
 			}
-
 			rewritten = append(rewritten, sid)
 		}
 		if len(rewritten) == 0 {
 			delete(i.sectors, d)
 			return nil
 		}
-
 		i.sectors[d] = rewritten
 	}
-
 	return nil
 }
 

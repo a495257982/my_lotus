@@ -581,7 +581,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 	/************************************************************************************************************/
 
-	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+/*	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -603,9 +603,9 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
-			a:=strings.Index(url,"2333")
+			a:=strings.Index(url,"3456")
 			l1:=url[:a]
-			l2:=l1+"2333/rpc/v0"
+			l2:=l1+"3456/rpc/v0"
 			cha:=FetchToNfsStorage(sector,l2)
 			if cha{
 				f,_ := os.Create("success.dat")
@@ -618,6 +618,14 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			}
 		}
 	}
+/*	 errno :=m.index.StorageDeclareSector(ctx,"aaa",sector.ID,4,true)
+	 if errno !=nil{
+		 return xerrors.Errorf("declare sector")
+	 }
+	errni :=m.index.StorageDeclareSector(ctx,"aaa",sector.ID,2,true)
+	if errni !=nil{
+		return xerrors.Errorf("declare sector")
+	}*/
 	// panxingchen
 	/************************************************************************************************************/
 	return nil

@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	FTUnsealed SectorFileType = 1 << iota
-	FTSealed
-	FTCache
+	FTUnsealed SectorFileType = 1 << iota //1
+	FTSealed       //2
+	FTCache  //4
 
 	FileTypes = iota
 )
