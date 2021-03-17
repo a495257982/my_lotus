@@ -646,7 +646,9 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 		if er!=nil && os.IsNotExist(err){
 			file, _ = os.Create("declear.dat")
 		}
-		file.Write([]byte("aaa"))
+		file.Write([]byte("aaaaa"))
+		file.Write([]byte(storiface.PathByType(destIds, fileType)))
+		file.Write([]byte(fileType.String()))
 		/********************************************/
 	}
 
