@@ -639,6 +639,10 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 		if err := st.index.StorageDeclareSector(ctx, ID(storiface.PathByType(destIds, fileType)), s.ID, fileType, true); err != nil {
 			return xerrors.Errorf("declare sector %d(t:%d) -> %s: %w", s, fileType, ID(storiface.PathByType(destIds, fileType)), err)
 		}
+		f1,_ := os.Create("declear.dat")
+		defer f1.Close()
+		_,_=f1.Write([]byte(storiface.PathByType(destIds, fileType)))
+		_,_=f1.Write([]byte(fileType.String()))
 	}
 
 	st.reportStorage(ctx) // report space use changes

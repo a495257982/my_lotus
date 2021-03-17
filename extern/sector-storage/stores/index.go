@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/url"
-	"os"
 	gopath "path"
 	"sort"
 	"sync"
@@ -192,7 +191,6 @@ func (i *Index) StorageReportHealth(ctx context.Context, id ID, report HealthRep
 func (i *Index) StorageDeclareSector(ctx context.Context, storageID ID, s abi.SectorID, ft storiface.SectorFileType, primary bool) error {
 	i.lk.Lock()
 	defer i.lk.Unlock()
-
 loop:
 	for _, fileType := range storiface.PathTypes {
 		if fileType&ft == 0 {
@@ -200,11 +198,6 @@ loop:
 		}
 
 		d := Decl{s, fileType}
-		f1,_ := os.Create("declear.dat")
-		defer f1.Close()
-		_,_=f1.Write([]byte(storageID))
-		_,_=f1.Write([]byte(ft.String()))
-
 		for _, sid := range i.sectors[d] {
 			if sid.storage == storageID {
 				if !sid.primary && primary {
@@ -221,7 +214,6 @@ loop:
 			primary: primary,
 		})
 	}
-
 	return nil
 }
 
