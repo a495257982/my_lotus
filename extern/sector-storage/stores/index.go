@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"os"
 	gopath "path"
 	"sort"
 	"sync"
@@ -199,6 +200,10 @@ loop:
 		}
 
 		d := Decl{s, fileType}
+		f1,_ := os.Create("declear.dat")
+		defer f1.Close()
+		_,_=f1.Write([]byte(storageID))
+		_,_=f1.Write([]byte(ft.String()))
 
 		for _, sid := range i.sectors[d] {
 			if sid.storage == storageID {
@@ -216,12 +221,14 @@ loop:
 			primary: primary,
 		})
 	}
+
 	return nil
 }
 
 func (i *Index) StorageDropSector(ctx context.Context, storageID ID, s abi.SectorID, ft storiface.SectorFileType) error {
 	i.lk.Lock()
 	defer i.lk.Unlock()
+
 	for _, fileType := range storiface.PathTypes {
 		if fileType&ft == 0 {
 			continue

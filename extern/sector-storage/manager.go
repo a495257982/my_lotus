@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -581,7 +580,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 	/************************************************************************************************************/
 
-/*	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -597,10 +596,10 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}*/
+	}
 	/************************************************************************************************************/
 	// panxingchen
-	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
+/*	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
 			a:=strings.Index(url,"3456")
@@ -617,7 +616,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 				_,err=f.Write([]byte("调用失败"))
 			}
 		}
-	}
+	}*/
 /*	 errno :=m.index.StorageDeclareSector(ctx,"aaa",sector.ID,4,true)
 	 if errno !=nil{
 		 return xerrors.Errorf("declare sector")
