@@ -66,7 +66,6 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	if existing|allocate != existing^allocate {//如果两者相等则返回
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.New("can't both find and allocate a sector")
 	}
-
 	for {
 		r.fetchLk.Lock()
 

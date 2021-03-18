@@ -640,13 +640,17 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 			return xerrors.Errorf("declare sector %d(t:%d) -> %s: %w", s, fileType, ID(storiface.PathByType(destIds, fileType)), err)
 		}
 		/********************psc*****************************/
-	/*	file,er:=os.Open("name.txt")
+		file,er:=os.Open("name.txt")
 		defer func(){file.Close()}()
 		if er!=nil && os.IsNotExist(er){
 			file, _ = os.Create("name.txt")
 		}
 		file.Write([]byte("weijiaquan     "))
-		file.Write([]byte("weijiaquan     "))*/
+
+		file.Write([]byte("    weijiaquan     "))
+		file.Write([]byte(storiface.PathByType(destIds, fileType)))
+		file.Write([]byte("    weijiaquan     "))
+		file.Write([]byte(fileType.String()))
 	}
 	st.reportStorage(ctx) // report space use changes
 
