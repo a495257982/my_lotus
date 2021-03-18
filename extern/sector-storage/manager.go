@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -608,7 +607,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 	/******************psc******************************************************************************************/
 	// panxingchen
-	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
+	/*si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
 			a:=strings.Index(url,"3456")
@@ -634,7 +633,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	errni :=m.index.StorageDeclareSector(ctx,stores.ID(storiface.PathByType(destIds, 4)),sector.ID,4,true)
 	if errni !=nil{
 		return xerrors.Errorf("declare sector")
-	}
+	}*/
 	return nil
 }
 

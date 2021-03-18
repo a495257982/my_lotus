@@ -150,7 +150,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 			log.Warnf("declaring sector %v in %s failed: %+v", s, storageID, err)
 			continue
 		}
-		file,er:=os.Open("name.txt")
+		/*file,er:=os.Open("name.txt")
 		defer func(){file.Close()}()
 		if er!=nil && os.IsNotExist(er){
 			file, _ = os.Create("name.txt")
@@ -165,7 +165,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		file.Write([]byte("     weijiaquan     "))
 		file.Write([]byte(ids.Sealed))
 		file.Write([]byte("     weijiaquan     "))
-		file.Write([]byte(ids.Unsealed))
+		file.Write([]byte(ids.Unsealed))*/
 		/************************psc*************************/
 	/*	file,er:=os.Open("remote.dat")
 		defer func(){file.Close()}()
