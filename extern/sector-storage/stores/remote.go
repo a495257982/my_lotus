@@ -161,6 +161,12 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		file.Write([]byte(storageID))
 		file.Write([]byte("     weijiaquan     "))
 		file.Write([]byte(fileType.String()))
+		file.Write([]byte("     weijiaquan     "))
+		file.Write([]byte(ids.Cache))
+		file.Write([]byte("     weijiaquan     "))
+		file.Write([]byte(ids.Sealed))
+		file.Write([]byte("     weijiaquan     "))
+		file.Write([]byte(ids.Unsealed))
 		/************************psc*************************/
 	/*	file,er:=os.Open("remote.dat")
 		defer func(){file.Close()}()

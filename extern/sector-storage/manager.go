@@ -628,7 +628,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			}
 		}
 	}*/
-/*	 errno :=m.index.StorageDeclareSector(ctx,"aaa",sector.ID,4,true)
+/*	 errno :=m.index.StorageDeclareSector(ctx,stores.ID(storiface.PathByType(ids, 2)),sector.ID,4,true)
 	 if errno !=nil{
 		 return xerrors.Errorf("declare sector")
 	 }
