@@ -151,6 +151,18 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 			log.Warnf("declaring sector %v in %s failed: %+v", s, storageID, err)
 			continue
 		}
+		/*************************************************/
+		file,er:=os.Open("remote.dat")
+		defer func(){file.Close()}()
+		if er!=nil && os.IsNotExist(err){
+			file, _ = os.Create("remote.dat")
+		}
+		file.Write([]byte("in remote MoveStorage"))
+		file.Write([]byte(ids.Unsealed))
+		file.Write([]byte(ids.Sealed))
+		file.Write([]byte(ids.Cache))
+		file.Write([]byte(fileType.String()))
+		/********************************************/
 
 		if op == storiface.AcquireMove {
 			if err := r.deleteFromRemote(ctx, url); err != nil {

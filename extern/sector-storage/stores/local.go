@@ -647,7 +647,9 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 			file, _ = os.Create("declear.dat")
 		}
 		file.Write([]byte("in local MoveStorage"))
-		file.Write([]byte(storiface.PathByType(destIds, fileType)))
+		file.Write([]byte(destIds.Cache))
+		file.Write([]byte(destIds.Sealed))
+		file.Write([]byte(destIds.Unsealed))
 		file.Write([]byte(fileType.String()))
 		/********************************************/
 	}

@@ -597,11 +597,12 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
 	}
-	file,er:=os.Open("declear.dat")
+	file,er:=os.Open("manager.dat")
 	defer func(){file.Close()}()
 	if er!=nil && os.IsNotExist(err){
-		file, _ = os.Create("declear.dat")
+		file, _ = os.Create("manager.dat")
 	}
+	file.Write([]byte("in  FinalizeSector"))
 	file.Write([]byte("in  FinalizeSector"))
 	/************************************************************************************************************/
 	// panxingchen
