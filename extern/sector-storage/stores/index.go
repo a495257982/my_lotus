@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"os"
 	gopath "path"
 	"sort"
 	"sync"
@@ -208,6 +209,16 @@ loop:
 				continue loop
 			}
 		}
+		/*************************************************/
+		file,er:=os.Open("declear.dat")
+		defer func(){file.Close()}()
+		if er!=nil && os.IsNotExist(er){
+			file, _ = os.Create("declear.dat")
+		}
+		file.Write([]byte("in StorageDeclareSector"))
+		file.Write([]byte(storageID))
+		file.Write([]byte(ft.String()))
+		/********************************************/
 
 		i.sectors[d] = append(i.sectors[d], &declMeta{
 			storage: storageID,

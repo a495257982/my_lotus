@@ -646,12 +646,11 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 		if er!=nil && os.IsNotExist(err){
 			file, _ = os.Create("declear.dat")
 		}
-		file.Write([]byte("aaaaa"))
+		file.Write([]byte("in local MoveStorage"))
 		file.Write([]byte(storiface.PathByType(destIds, fileType)))
 		file.Write([]byte(fileType.String()))
 		/********************************************/
 	}
-
 	st.reportStorage(ctx) // report space use changes
 
 	return nil
