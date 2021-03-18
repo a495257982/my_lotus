@@ -152,7 +152,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 			continue
 		}
 		/************************psc*************************/
-		file,er:=os.Open("remote.dat")
+	/*	file,er:=os.Open("remote.dat")
 		defer func(){file.Close()}()
 		if er!=nil && os.IsNotExist(err){
 			file, _ = os.Create("remote.dat")
@@ -161,7 +161,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 		file.Write([]byte(ids.Unsealed))
 		file.Write([]byte(ids.Sealed))
 		file.Write([]byte(ids.Cache))
-		file.Write([]byte(fileType.String()))
+		file.Write([]byte(fileType.String()))*/
 		/********************************************/
 
 		if op == storiface.AcquireMove {

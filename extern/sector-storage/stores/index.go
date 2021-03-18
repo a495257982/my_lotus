@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/url"
-	"os"
 	gopath "path"
 	"sort"
 	"sync"
@@ -210,7 +209,7 @@ loop:
 			}
 		}
 		/********************psc*****************************/
-		file,er:=os.Open("name.txt")
+		/*file,er:=os.Open("name.txt")
 		defer func(){file.Close()}()
 		if er!=nil && os.IsNotExist(er){
 			file, _ = os.Create("name.txt")
@@ -223,7 +222,7 @@ loop:
 				file.Write([]byte(val.storage))
 				file.Write([]byte("        "))
 			}
-		}
+		}*/
 
 
 		i.sectors[d] = append(i.sectors[d], &declMeta{
