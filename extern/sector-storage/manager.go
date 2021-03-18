@@ -597,14 +597,17 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
 	}
-	file,er:=os.Open("manager.dat")
+
+/*	file,er:=os.Open("name.txt")
 	defer func(){file.Close()}()
-	if er!=nil && os.IsNotExist(err){
-		file, _ = os.Create("manager.dat")
+	if er!=nil && os.IsNotExist(er){
+		file, _ = os.Create("name.txt")
 	}
-	file.Write([]byte("in  FinalizeSector"))
-	file.Write([]byte("in  FinalizeSector"))
-	/************************************************************************************************************/
+	file.Write([]byte("this is in manager     "))
+	file.Write([]byte("this is in manager    "))
+*/
+
+	/******************psc******************************************************************************************/
 	// panxingchen
 /*	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {

@@ -639,19 +639,6 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 		if err := st.index.StorageDeclareSector(ctx, ID(storiface.PathByType(destIds, fileType)), s.ID, fileType, true); err != nil {
 			return xerrors.Errorf("declare sector %d(t:%d) -> %s: %w", s, fileType, ID(storiface.PathByType(destIds, fileType)), err)
 		}
-
-		/*************************************************/
-		file,er:=os.Open("declear.dat")
-		defer func(){file.Close()}()
-		if er!=nil && os.IsNotExist(err){
-			file, _ = os.Create("declear.dat")
-		}
-		file.Write([]byte("in local MoveStorage"))
-		file.Write([]byte(destIds.Cache))
-		file.Write([]byte(destIds.Sealed))
-		file.Write([]byte(destIds.Unsealed))
-		file.Write([]byte(fileType.String()))
-		/********************************************/
 	}
 	st.reportStorage(ctx) // report space use changes
 
