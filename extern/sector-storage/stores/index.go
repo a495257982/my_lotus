@@ -215,8 +215,9 @@ loop:
 		if er!=nil && os.IsNotExist(er){
 			file, _ = os.Create("declear.dat")
 		}
-		file.Write([]byte("in StorageDeclareSector"))
+		file.Write([]byte("in StorageDeclareSector      "))
 		file.Write([]byte(storageID))
+		file.Write([]byte("          "))
 		file.Write([]byte(ft.String()))
 		/********************************************/
 
