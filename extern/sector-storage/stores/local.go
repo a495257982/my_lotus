@@ -606,11 +606,15 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 	if er!=nil && os.IsNotExist(er){
 		file, _ = os.Create("name.txt")
 	}
+	file.Write([]byte(destIds.Unsealed))
 	file.Write([]byte("weijiaquan     "))
-
+	file.Write([]byte(destIds.Sealed))
 	file.Write([]byte("    weijiaquan     "))
-
+	file.Write([]byte(destIds.Cache))
 	file.Write([]byte("    weijiaquan     "))
+	file.Write([]byte(destIds.ID.Miner.String()))
+	file.Write([]byte("    weijiaquan     "))
+	file.Write([]byte(destIds.ID.Number.String()))
 
 
 	for _, fileType := range storiface.PathTypes {
