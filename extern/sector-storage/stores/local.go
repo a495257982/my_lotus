@@ -601,7 +601,7 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 	}
 
 	/********************psc*****************************/
-	file,er:=os.Open("name.txt")
+	/*file,er:=os.Open("name.txt")
 	defer func(){file.Close()}()
 	if er!=nil && os.IsNotExist(er){
 		file, _ = os.Create("name.txt")
@@ -614,7 +614,7 @@ func (st *Local) MoveStorage(ctx context.Context, s storage.SectorRef, types sto
 	file.Write([]byte("    weijiaquan     "))
 	file.Write([]byte(destIds.ID.Miner.String()))
 	file.Write([]byte("    weijiaquan     "))
-	file.Write([]byte(destIds.ID.Number.String()))
+	file.Write([]byte(destIds.ID.Number.String()))*/
 
 
 	for _, fileType := range storiface.PathTypes {

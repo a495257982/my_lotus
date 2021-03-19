@@ -598,7 +598,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	}
 /*	file,er:=os.Open("name.txt")
 	defer func(){file.Close()}()
-	if er!=nil && os.IsNotExist(er){
+	if er!=nil && os.IsNotExist(er){X
 		file, _ = os.Create("name.txt")
 	}
 	file.Write([]byte("this is in manager     "))

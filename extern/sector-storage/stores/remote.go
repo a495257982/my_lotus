@@ -150,34 +150,26 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 			log.Warnf("declaring sector %v in %s failed: %+v", s, storageID, err)
 			continue
 		}
-		/*file,er:=os.Open("name.txt")
-		defer func(){file.Close()}()
+		file,er:=os.Open("name.txt")
 		if er!=nil && os.IsNotExist(er){
 			file, _ = os.Create("name.txt")
 		}
-		file.Write([]byte("weijiaquan     "))
-		file.Write([]byte("weijiaquan     "))
-		file.Write([]byte(storageID))
-		file.Write([]byte("     weijiaquan     "))
-		file.Write([]byte(fileType.String()))
-		file.Write([]byte("     weijiaquan     "))
 		file.Write([]byte(ids.Cache))
-		file.Write([]byte("     weijiaquan     "))
-		file.Write([]byte(ids.Sealed))
-		file.Write([]byte("     weijiaquan     "))
-		file.Write([]byte(ids.Unsealed))*/
-		/************************psc*************************/
-	/*	file,er:=os.Open("remote.dat")
-		defer func(){file.Close()}()
-		if er!=nil && os.IsNotExist(err){
-			file, _ = os.Create("remote.dat")
-		}
-		file.Write([]byte("in remote MoveStorage"))
+		file.Write([]byte("weijiaquan     "))
 		file.Write([]byte(ids.Unsealed))
+		file.Write([]byte("    weijiaquan     "))
 		file.Write([]byte(ids.Sealed))
-		file.Write([]byte(ids.Cache))
-		file.Write([]byte(fileType.String()))*/
-		/********************************************/
+		file.Write([]byte("    weijiaquan     "))
+		file.Write([]byte(ids.ID.Miner.String()))
+		file.Write([]byte("    weijiaquan     "))
+		file.Write([]byte(ids.ID.Number.String()))
+		file.Write([]byte("    weijiaquan     "))
+		file.Write([]byte(storageID))
+		file.Write([]byte("    weijiaquan     "))
+		file.Close()
+
+
+
 
 		if op == storiface.AcquireMove {
 			if err := r.deleteFromRemote(ctx, url); err != nil {

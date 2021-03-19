@@ -208,23 +208,6 @@ loop:
 				continue loop
 			}
 		}
-		/********************psc*****************************/
-		/*file,er:=os.Open("name.txt")
-		defer func(){file.Close()}()
-		if er!=nil && os.IsNotExist(er){
-			file, _ = os.Create("name.txt")
-		}
-		file.Write([]byte("panxincheng     "))
-		file.Write([]byte("panxincheng     "))
-
-		for _, value := range i.sectors{
-			for _ ,val:=range value{
-				file.Write([]byte(val.storage))
-				file.Write([]byte("        "))
-			}
-		}*/
-
-
 		i.sectors[d] = append(i.sectors[d], &declMeta{
 			storage: storageID,
 			primary: primary,
