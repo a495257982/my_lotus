@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -579,7 +580,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 
 	/************************************************************************************************************/
-
+/*
 	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
@@ -595,19 +596,9 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}
-/*	file,er:=os.Open("name.txt")
-	defer func(){file.Close()}()
-	if er!=nil && os.IsNotExist(er){X
-		file, _ = os.Create("name.txt")
-	}
-	file.Write([]byte("this is in manager     "))
-	file.Write([]byte("this is in manager    "))
-
-
+	}*/
 	/******************psc******************************************************************************************/
-	// panxingchen
-	/*si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
+	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
 			a:=strings.Index(url,"3456")
@@ -625,15 +616,38 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			}
 		}
 	}
-	_, destIds, err := m.storage.AcquireSector(ctx,sector,0,storiface.FTCache|storiface.FTSealed|moveUnsealed,"storage","move")
-	errno :=m.index.StorageDeclareSector(ctx,stores.ID(storiface.PathByType(destIds, 2)),sector.ID,4,true)
-	if errno !=nil{
-		return xerrors.Errorf("declare sector")
+
+	_, ids, err := m.storage.AcquireSector(ctx,sector,0,2,"storage","aaa")
+	if err != nil {
+		return  err
 	}
-	errni :=m.index.StorageDeclareSector(ctx,stores.ID(storiface.PathByType(destIds, 4)),sector.ID,4,true)
-	if errni !=nil{
-		return xerrors.Errorf("declare sector")
-	}*/
+	m.index.StorageDeclareSector(ctx, stores.ID(ids.Sealed),sector.ID,2,true)
+
+
+	_, ide, err := m.storage.AcquireSector(ctx,sector,0,4,"storage","aaa")
+	if err != nil {
+		return  err
+	}
+	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
+
+	/******************************************psc**********************************/
+	file,er:=os.Open("name.txt")
+	if er!=nil && os.IsNotExist(er){
+		file, _ = os.Create("name.txt")
+	}
+	file.Write([]byte(ids.Cache))
+	file.Write([]byte("weijiaquan     "))
+	file.Write([]byte(ids.Unsealed))
+	file.Write([]byte("    weijiaquan     "))
+	file.Write([]byte(ids.Sealed))
+	file.Write([]byte("    weijiaquan     "))
+	file.Write([]byte(ids.ID.Miner.String()))
+	file.Write([]byte("    weijiaquan     "))
+	file.Write([]byte(ids.ID.Number.String()))
+	file.Write([]byte("    weijiaquan     "))
+	file.Write([]byte("    weijiaquan     "))
+	file.Close()
+
 	return nil
 }
 

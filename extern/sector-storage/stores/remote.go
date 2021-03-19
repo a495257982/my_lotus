@@ -110,6 +110,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 	}
 
 	apaths, ids, err := r.local.AcquireSector(ctx, s, storiface.FTNone, toFetch, pathType, op)
+	/*apaths, ids, err := r.local.AcquireSector(ctx, s, 0, 2sealed 4cache, "storage", "aaa")*/
 	if err != nil {
 		return storiface.SectorPaths{}, storiface.SectorPaths{}, xerrors.Errorf("allocate local sector for fetching: %w", err)
 	}
@@ -150,26 +151,7 @@ func (r *Remote) AcquireSector(ctx context.Context, s storage.SectorRef, existin
 			log.Warnf("declaring sector %v in %s failed: %+v", s, storageID, err)
 			continue
 		}
-		file,er:=os.Open("name.txt")
-		if er!=nil && os.IsNotExist(er){
-			file, _ = os.Create("name.txt")
-		}
-		file.Write([]byte(ids.Cache))
-		file.Write([]byte("weijiaquan     "))
-		file.Write([]byte(ids.Unsealed))
-		file.Write([]byte("    weijiaquan     "))
-		file.Write([]byte(ids.Sealed))
-		file.Write([]byte("    weijiaquan     "))
-		file.Write([]byte(ids.ID.Miner.String()))
-		file.Write([]byte("    weijiaquan     "))
-		file.Write([]byte(ids.ID.Number.String()))
-		file.Write([]byte("    weijiaquan     "))
-		file.Write([]byte(storageID))
-		file.Write([]byte("    weijiaquan     "))
-		file.Close()
-
-
-
+		/*"if err := r.index.StorageDeclareSector(ctx, ID(storageID), s.ID, 2, true)"*/
 
 		if op == storiface.AcquireMove {
 			if err := r.deleteFromRemote(ctx, url); err != nil {
