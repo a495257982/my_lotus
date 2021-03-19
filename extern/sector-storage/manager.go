@@ -631,23 +631,6 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
 
 	/******************************************psc**********************************/
-	file,er:=os.Open("name.txt")
-	if er!=nil && os.IsNotExist(er){
-		file, _ = os.Create("name.txt")
-	}
-	file.Write([]byte(ids.Cache))
-	file.Write([]byte("weijiaquan     "))
-	file.Write([]byte(ids.Unsealed))
-	file.Write([]byte("    weijiaquan     "))
-	file.Write([]byte(ids.Sealed))
-	file.Write([]byte("    weijiaquan     "))
-	file.Write([]byte(ids.ID.Miner.String()))
-	file.Write([]byte("    weijiaquan     "))
-	file.Write([]byte(ids.ID.Number.String()))
-	file.Write([]byte("    weijiaquan     "))
-	file.Write([]byte("    weijiaquan     "))
-	file.Close()
-
 	return nil
 }
 
