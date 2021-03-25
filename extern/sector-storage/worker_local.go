@@ -3,7 +3,6 @@ package sectorstorage
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -29,6 +28,24 @@ import (
 	"github.com/filecoin-project/lotus/extern/sector-storage/stores"
 	"github.com/filecoin-project/lotus/extern/sector-storage/storiface"
 )
+/********************************psc***********************************************/
+/*
+#define _GNU_SOURCE
+#include <sched.h>
+#include <pthread.h>
+
+void lock_thread(int cpuid) {
+        pthread_t tid;
+        cpu_set_t cpuset;
+
+        tid = pthread_self();
+        CPU_ZERO(&cpuset);
+        CPU_SET(cpuid, &cpuset);
+    pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
+}
+*/
+import "C"
+
 
 var pathTypes = []storiface.SectorFileType{storiface.FTUnsealed, storiface.FTSealed, storiface.FTCache}
 
@@ -541,7 +558,7 @@ func (l *LocalWorker) Close() error {
 	return nil
 }
 // panxingchen
-func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
+/*func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 
 	a:=sector.Number
 	b:=sector.Miner
@@ -567,8 +584,49 @@ func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID)
 	str3 := string(output1)
 	fmt.Println(str3)
 	return true
-}
+}*/
 // panxingchen
+
+func setAffinity(cpuID int) {
+	runtime.LockOSThread()
+	C.lock_thread(C.int(cpuID))
+}
+var wg sync.WaitGroup
+func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
+
+	a:=sector.Number
+	b:=sector.Miner
+	Path:=os.Getenv("MOVEPATH")
+	MinerPath:=os.Getenv("MINERSTORAGE")
+
+	movecache:="mv "+MinerPath+"/cache/s-t0"+b.String()+"-"+a.String() +"   "+Path+"/cache"
+	movesealed:="mv "+MinerPath+"/sealed/s-t0"+b.String()+"-"+a.String() +"  "+Path+"/sealed"
+
+	t:= runtime.NumCPU()
+	lock := len(os.Getenv("LOCK")) > 0
+    wg.Add(2)
+	go movetocache(t-1,lock,movecache)
+	go movetosealed(t-2,lock,movesealed)
+	wg.Wait()
+	return true
+}
+
+func movetocache(id int ,lock bool,movecache string)  {
+	if lock {
+		setAffinity(id)
+	}
+
+	exec.Command("bash", "-c", movecache)
+	wg.Done()
+}
+func movetosealed(id int,lock bool,movesealed string)  {
+	if lock {
+		setAffinity(id)
+	}
+
+	exec.Command("bash", "-c", movesealed)
+	wg.Done()
+}
 
 // WaitQuiet blocks as long as there are tasks running
 func (l *LocalWorker) WaitQuiet() {
