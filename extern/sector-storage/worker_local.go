@@ -28,7 +28,6 @@ import (
 	"github.com/filecoin-project/lotus/extern/sector-storage/stores"
 	"github.com/filecoin-project/lotus/extern/sector-storage/storiface"
 )
-/********************************psc***********************************************/
 /*
 #define _GNU_SOURCE
 #include <sched.h>
