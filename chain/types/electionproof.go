@@ -175,7 +175,7 @@ func (p *poiss) next() *big.Int {
 // ComputeWinCount uses VRFProof to compute number of wins
 // The algorithm is based on Algorand's Sortition with Binomial distribution
 // replaced by Poisson distribution.
-func (ep *ElectionProof) ComputeWinCount(power BigInt, totalPower BigInt) int64 {
+func (ep *ElectionProof) ComputeWinCount(power BigInt, totalPower BigInt) int64 {//算它赢了多少次
 	h := blake2b.Sum256(ep.VRFProof)
 
 	lhs := BigFromBytes(h[:]).Int // 256bits, assume Q.256 so [0, 1)
@@ -191,9 +191,9 @@ func (ep *ElectionProof) ComputeWinCount(power BigInt, totalPower BigInt) int64 
 	//    rhs = 1 - pmf
 	//    for h(vrf) < rhs: j++; pmf = pmf * lam / j; rhs = rhs - pmf
 
-	lam := lambda(power.Int, totalPower.Int) // Q.256
+	lam := lambda(power.Int, totalPower.Int) // Q.256//算出λ
 
-	p, rhs := newPoiss(lam)
+	p, rhs := newPoiss(lam)//算出λ的期望
 
 	var j int64
 	for lhs.Cmp(rhs) < 0 && j < MaxWinCount {
