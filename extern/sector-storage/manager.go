@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -580,7 +579,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 
 	/************************************************************************************************************/
-/*
+
 	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
@@ -596,9 +595,9 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
-	}*/
+	}
 	/******************psc******************************************************************************************/
-	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
+	/*si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
 			a:=strings.Index(url,"3456")
@@ -628,7 +627,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	if err != nil {
 		return  err
 	}
-	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
+	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)*/
 
 	/******************************************psc**********************************/
 	return nil
