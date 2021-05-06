@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"fmt"
-	"os"
 	"sync"
 	"time"
 
@@ -360,19 +359,19 @@ func (m *Miner) mineOne(ctx context.Context, base *MiningBase) (*types.BlockMsg,
 	start := build.Clock.Now()
 
 	round := base.TipSet.Height() + base.NullRounds + 1
-	file,er:=os.Open("proveing.txt")
+	/*file,er:=os.Open("proveing.txt")
 	if er!=nil && os.IsNotExist(er){
 		file, _ = os.Create("proveing.txt")
 	}
 	file.WriteString("round=")
 	file.WriteString(round.String())
-	file.WriteString("        ")
+	file.WriteString("        ")*/
 
 	mbi, err := m.api.MinerGetBaseInfo(ctx, m.address, round, base.TipSet.Key())
 	if err != nil {
 		return nil, xerrors.Errorf("failed to get mining base info: %w", err)
 	}
-	file.WriteString("minebaseinfo=")
+	/*file.WriteString("minebaseinfo=")
 	file.WriteString(mbi.MinerPower.String())
 	file.WriteString("   ")
 	file.WriteString(mbi.NetworkPower.String())
@@ -388,7 +387,7 @@ func (m *Miner) mineOne(ctx context.Context, base *MiningBase) (*types.BlockMsg,
 		file.WriteString(j.SectorNumber.String())
 		file.WriteString(string(j.SealProof))
 	}
-
+*/
 	if mbi == nil {
 		return nil, nil
 	}
