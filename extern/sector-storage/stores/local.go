@@ -71,7 +71,7 @@ type Local struct {
 	index        SectorIndex
 	urls         []string
 
-	paths map[ID]*path
+	Paths map[ID]*path
 
 	localLk sync.RWMutex
 }
@@ -97,7 +97,7 @@ func (p *path) stat(ls LocalStorage) (fsutil.FsStat, error) {
 				continue
 			}
 
-			sp := p.sectorPath(id, fileType)
+			sp := p.SectorPath(id, fileType)
 
 			used, err := ls.DiskUsage(sp)
 			if err == os.ErrNotExist {
@@ -109,7 +109,7 @@ func (p *path) stat(ls LocalStorage) (fsutil.FsStat, error) {
 				used, err = ls.DiskUsage(p)
 			}
 			if err != nil {
-				log.Errorf("getting disk usage of '%s': %+v", p.sectorPath(id, fileType), err)
+				log.Errorf("getting disk usage of '%s': %+v", p.SectorPath(id, fileType), err)
 				continue
 			}
 
@@ -130,7 +130,7 @@ func (p *path) stat(ls LocalStorage) (fsutil.FsStat, error) {
 	return stat, err
 }
 
-func (p *path) sectorPath(sid abi.SectorID, fileType storiface.SectorFileType) string {
+func (p *path) SectorPath(sid abi.SectorID, fileType storiface.SectorFileType) string {
 	return filepath.Join(p.local, fileType.String(), storiface.SectorName(sid))
 }
 
@@ -140,7 +140,7 @@ func NewLocal(ctx context.Context, ls LocalStorage, index SectorIndex, urls []st
 		index:        index,
 		urls:         urls,
 
-		paths: map[ID]*path{},
+		Paths: map[ID]*path{},
 	}
 	return l, l.open(ctx)
 }
@@ -188,7 +188,7 @@ func (st *Local) OpenPath(ctx context.Context, p string) error {
 		return err
 	}
 
-	st.paths[meta.ID] = out
+	st.Paths[meta.ID] = out
 
 	return nil
 }
@@ -215,7 +215,7 @@ func (st *Local) Redeclare(ctx context.Context) error {
 	st.localLk.Lock()
 	defer st.localLk.Unlock()
 
-	for id, p := range st.paths {
+	for id, p := range st.Paths {
 		mb, err := ioutil.ReadFile(filepath.Join(p.local, MetaFile))
 		if err != nil {
 			return xerrors.Errorf("reading storage metadata for %s: %w", p.local, err)
@@ -306,7 +306,7 @@ func (st *Local) reportStorage(ctx context.Context) {
 	st.localLk.RLock()
 
 	toReport := map[ID]HealthReport{}
-	for id, p := range st.paths {
+	for id, p := range st.Paths {
 		stat, err := p.stat(st.localStorage)
 		r := HealthReport{Stat: stat}
 		if err != nil {
@@ -347,7 +347,7 @@ func (st *Local) Reserve(ctx context.Context, sid storage.SectorRef, ft storifac
 
 		id := ID(storiface.PathByType(storageIDs, fileType))
 
-		p, ok := st.paths[id]
+		p, ok := st.Paths[id]
 		if !ok {
 			return nil, errPathNotFound
 		}
@@ -408,7 +408,7 @@ func (st *Local) AcquireSector(ctx context.Context, sid storage.SectorRef, exist
 		}
 
 		for _, info := range si {
-			p, ok := st.paths[info.ID]
+			p, ok := st.Paths[info.ID]
 			if !ok {
 				continue
 			}
@@ -417,7 +417,7 @@ func (st *Local) AcquireSector(ctx context.Context, sid storage.SectorRef, exist
 				continue
 			}
 
-			spath := p.sectorPath(sid.ID, fileType)
+			spath := p.SectorPath(sid.ID, fileType)
 			storiface.SetPathByType(&out, fileType, spath)
 			storiface.SetPathByType(&storageIDs, fileType, string(info.ID))
 
@@ -440,7 +440,7 @@ func (st *Local) AcquireSector(ctx context.Context, sid storage.SectorRef, exist
 		var bestID ID
 
 		for _, si := range sis {
-			p, ok := st.paths[si.ID]
+			p, ok := st.Paths[si.ID]
 			if !ok {
 				continue
 			}
@@ -459,7 +459,7 @@ func (st *Local) AcquireSector(ctx context.Context, sid storage.SectorRef, exist
 
 			// TODO: Check free space
 
-			best = p.sectorPath(sid.ID, fileType)
+			best = p.SectorPath(sid.ID, fileType)
 			bestID = si.ID
 			break
 		}
@@ -481,7 +481,7 @@ func (st *Local) Local(ctx context.Context) ([]StoragePath, error) {
 	defer st.localLk.RUnlock()
 
 	var out []StoragePath
-	for id, p := range st.paths {
+	for id, p := range st.Paths {
 		if p.local == "" {
 			continue
 		}
@@ -563,7 +563,7 @@ func (st *Local) RemoveCopies(ctx context.Context, sid abi.SectorID, typ storifa
 }
 
 func (st *Local) removeSector(ctx context.Context, sid abi.SectorID, typ storiface.SectorFileType, storage ID) error {
-	p, ok := st.paths[storage]
+	p, ok := st.Paths[storage]
 	if !ok {
 		return nil
 	}
@@ -576,7 +576,7 @@ func (st *Local) removeSector(ctx context.Context, sid abi.SectorID, typ storifa
 		return xerrors.Errorf("dropping sector from index: %w", err)
 	}
 
-	spath := p.sectorPath(sid, typ)
+	spath := p.SectorPath(sid, typ)
 	log.Infof("remove %s", spath)
 
 	if err := os.RemoveAll(spath); err != nil {
@@ -668,7 +668,7 @@ func (st *Local) FsStat(ctx context.Context, id ID) (fsutil.FsStat, error) {
 	st.localLk.RLock()
 	defer st.localLk.RUnlock()
 
-	p, ok := st.paths[id]
+	p, ok := st.Paths[id]
 	if !ok {
 		return fsutil.FsStat{}, errPathNotFound
 	}

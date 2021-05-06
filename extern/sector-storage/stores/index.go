@@ -347,7 +347,6 @@ func (i *Index) StorageFindSector(ctx context.Context, s abi.SectorID, ft storif
 			})
 		}
 	}
-
 	return out, nil
 }
 

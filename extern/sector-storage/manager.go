@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -580,7 +581,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 	/************************************************************************************************************/
 
-	fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
+	/*fetchSel := newAllocSelector(m.index, storiface.FTCache|storiface.FTSealed, storiface.PathStorage)
 	moveUnsealed := unsealed
 	{
 		if len(keepUnsealed) == 0 {
@@ -595,15 +596,53 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		})
 	if err != nil {
 		return xerrors.Errorf("moving sector to storage: %w", err)
+	}*/
+	/******************psc****************/
+
+
+
+
+/*	ssize, err := sector.ProofType.SectorSize()
+	sis, err :=m.index.StorageBestAlloc(ctx,2,ssize,"storage")
+	if err != nil {
+
 	}
-	/******************psc******************************************************************************************/
-	/*si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
+	for _, si1 := range sis {
+
+		p, ok := m.localStore.Paths[si1.ID]
+		if !ok {
+			continue
+		}
+		if ("storage" == storiface.PathStorage) && !si1.CanStore {
+			continue
+		}
+
+		// TODO: Check free space
+		type ID string
+
+		var best  string
+		var bestID ID
+		best = p.SectorPath(sector.ID, 2)
+		bestID = ID(si1.ID)
+		break
+	}*/
+	_, ids, err := m.storage.AcquireSector(ctx,sector,0,2,"storage","aaa")
+	if err != nil {
+		return  err
+	}
+
+	_, ide, err := m.storage.AcquireSector(ctx,sector,0,4,"storage","aaa")
+	if err != nil {
+		return  err
+	}
+
+	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
 			a:=strings.Index(url,"3456")
 			l1:=url[:a]
 			l2:=l1+"3456/rpc/v0"
-			cha:=FetchToNfsStorage(sector,l2)
+			cha:=FetchToNfsStorage(sector,l2,ids.Sealed,ide.Cache)
 			if cha{
 				f,_ := os.Create("success.dat")
 				defer f.Close()
@@ -616,28 +655,22 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		}
 	}
 
-	_, ids, err := m.storage.AcquireSector(ctx,sector,0,2,"storage","aaa")
-	if err != nil {
-		return  err
-	}
+
 	m.index.StorageDeclareSector(ctx, stores.ID(ids.Sealed),sector.ID,2,true)
+	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
 
-
-	_, ide, err := m.storage.AcquireSector(ctx,sector,0,4,"storage","aaa")
-	if err != nil {
-		return  err
-	}
-	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)*/
-
-	/******************************************psc**********************************/
 	return nil
 }
 
 
+func FetchToNfsStorage(sector storage.SectorRef,URL string,a string,b string) bool  {
 
-// panxingchen
-func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
-
+	f1,_ := os.Create("success.dat")
+	f1.Write([]byte(a))
+	f1.Write([]byte("隔开"))
+	f1.Write([]byte(b))
+	defer f1.Close()
+	fmt.Println(a,b)
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
 	mapInstance["method"] = "Filecoin.MoveToNfsStorage"

@@ -375,12 +375,13 @@ func (sh *scheduler) trySched() {
 				<-throttle
 			}()
 
-			task := (*sh.schedQueue)[sqi]
-			needRes := ResourceTable[task.taskType][task.sector.ProofType]
+			task := (*sh.schedQueue)[sqi]//取出schedqueue 的第一个workerRequest
+			needRes := ResourceTable[task.taskType][task.sector.ProofType]//查看符合这个任务的资源
 
-			task.indexHeap = sqi
+			task.indexHeap = sqi//workreguest.indexHeap int
 			for wnd, windowRequest := range sh.openWindows {
-				worker, ok := sh.workers[windowRequest.worker]
+				worker, ok := sh.workers[windowRequest.worker]//取出对应的 workerHandle
+
 				if !ok {
 					log.Errorf("worker referenced by windowRequest not found (worker: %s)", windowRequest.worker)
 					// TODO: How to move forward here?
@@ -409,13 +410,13 @@ func (sh *scheduler) trySched() {
 					continue
 				}
 
-				acceptableWindows[sqi] = append(acceptableWindows[sqi], wnd)
+				acceptableWindows[sqi] = append(acceptableWindows[sqi], wnd)//二维数组的第一位存task，第二位存windows。新的任务总数是queuneLen
 			}
 
-			if len(acceptableWindows[sqi]) == 0 {
+			if len(acceptableWindows[sqi]) == 0 {//也就是说符合这个任务的window为0
 				return
 			}
-
+             //对相应的acceptableWindows[sqi]里面的winodws按照规则进行排序
 			// Pick best worker (shuffle in case some workers are equally as good)
 			rand.Shuffle(len(acceptableWindows[sqi]), func(i, j int) {
 				acceptableWindows[sqi][i], acceptableWindows[sqi][j] = acceptableWindows[sqi][j], acceptableWindows[sqi][i] // nolint:scopelint
@@ -429,7 +430,7 @@ func (sh *scheduler) trySched() {
 					return acceptableWindows[sqi][i] < acceptableWindows[sqi][j] // nolint:scopelint
 				}
 
-				wi := sh.workers[wii]
+				wi := sh.workers[wii]//workerHandle
 				wj := sh.workers[wji]
 
 				rpcCtx, cancel := context.WithTimeout(task.ctx, SelectorTimeout)
@@ -443,7 +444,7 @@ func (sh *scheduler) trySched() {
 			})
 		}(i)
 	}
-
+   //这里结束后  acceptableWindows := make([][]int, queuneLen) 已经存着所有的信息 第一项任务编号，第二项排序好的winodw
 	wg.Wait()
 
 	log.Debugf("SCHED windows: %+v", windows)
@@ -454,8 +455,8 @@ func (sh *scheduler) trySched() {
 	rmQueue := make([]int, 0, queuneLen)
 
 	for sqi := 0; sqi < queuneLen; sqi++ {
-		task := (*sh.schedQueue)[sqi]
-		needRes := ResourceTable[task.taskType][task.sector.ProofType]
+		task := (*sh.schedQueue)[sqi]  //workerrequest
+		needRes := ResourceTable[task.taskType][task.sector.ProofType]//拿到符合workerrequest 相应的资源
 
 		selectedWindow := -1
 		for _, wnd := range acceptableWindows[task.indexHeap] {
@@ -481,13 +482,13 @@ func (sh *scheduler) trySched() {
 			break
 		}
 
-		if selectedWindow < 0 {
+		if selectedWindow < 0 {//accaptwindow 二维数组的第二维所有的winodw都满足不了第一维中相应的任务的条件
 			// all windows full
 			continue
 		}
 
-		windows[selectedWindow].todo = append(windows[selectedWindow].todo, task)
-
+		windows[selectedWindow].todo = append(windows[selectedWindow].todo, task)//原本的逻辑是一个task有多少个window符合要求，选出了最好的那个window
+//     然后把相应的window 的task加进去
 		rmQueue = append(rmQueue, sqi)
 		scheduled++
 	}
@@ -505,7 +506,7 @@ func (sh *scheduler) trySched() {
 	}
 
 	scheduledWindows := map[int]struct{}{}
-	for wnd, window := range windows {
+	for wnd, window := range windows {//windows 是  []schedWindow
 		if len(window.todo) == 0 {
 			// Nothing scheduled here, keep the window open
 			continue
