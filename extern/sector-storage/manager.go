@@ -665,7 +665,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 func FetchToNfsStorage(sector storage.SectorRef,URL string,a string,b string) bool  {
 
-	f1,_ := os.Create("success.dat")
+	f1,_ := os.Create("ab.dat")
 	f1.Write([]byte(a))
 	f1.Write([]byte("隔开"))
 	f1.Write([]byte(b))
