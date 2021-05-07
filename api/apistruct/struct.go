@@ -419,6 +419,8 @@ type WorkerStruct struct {
 		Session        func(context.Context) (uuid.UUID, error) `perm:"admin"`
 		// panxingchen
 		MoveToNfsStorage          func(ctx context.Context, sector abi.SectorID)   bool    `perm:"admin"`
+
+		GstorageId   func(ctx context.Context)   string   `perm:"admin"`
 		// panxingchen
 	}
 }
@@ -1694,6 +1696,10 @@ func (w *WorkerStruct) MoveToNfsStorage(ctx context.Context, sector abi.SectorID
 	return w.Internal.MoveToNfsStorage(ctx,sector)
 }
 // panxingchen
+
+func (w *WorkerStruct)  GstorageId (ctx context.Context)string{
+	return w.Internal.GstorageId(ctx)
+}
 
 func (w *WorkerStruct) ProcessSession(ctx context.Context) (uuid.UUID, error) {
 	return w.Internal.ProcessSession(ctx)

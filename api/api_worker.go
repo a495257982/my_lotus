@@ -49,5 +49,6 @@ type WorkerAPI interface {
 	// panxingchen
 	MoveToNfsStorage         (ctx context.Context, sector abi.SectorID)  bool
 	// panxingchen
+	GstorageId(ctx context.Context)  string
 
 }

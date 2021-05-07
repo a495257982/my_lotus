@@ -557,6 +557,14 @@ func (l *LocalWorker) Close() error {
 	close(l.closing)
 	return nil
 }
+
+func  (l *LocalWorker) GetstorageId(ctx context.Context) string {
+	if os.Getenv("PATHID")==""{
+		return "error"
+	}
+	return os.Getenv("PATHID")
+}
+
 // panxingchen
 func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 
