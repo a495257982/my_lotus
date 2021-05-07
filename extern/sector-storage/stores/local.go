@@ -472,7 +472,6 @@ func (st *Local) AcquireSector(ctx context.Context, sid storage.SectorRef, exist
 		storiface.SetPathByType(&storageIDs, fileType, string(bestID))
 		allocate ^= fileType
 	}
-
 	return out, storageIDs, nil
 }
 

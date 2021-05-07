@@ -3,6 +3,7 @@ package sectorstorage
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -557,7 +558,7 @@ func (l *LocalWorker) Close() error {
 	return nil
 }
 // panxingchen
-/*func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
+func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 
 	a:=sector.Number
 	b:=sector.Miner
@@ -583,13 +584,14 @@ func (l *LocalWorker) Close() error {
 	str3 := string(output1)
 	fmt.Println(str3)
 	return true
-}*/
+}
 // panxingchen
 
-func setAffinity(cpuID int) {
+/*func setAffinity(cpuID int) {
 	runtime.LockOSThread()
 	C.lock_thread(C.int(cpuID))
 }
+
 var wg sync.WaitGroup
 func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID) bool {
 
@@ -610,7 +612,8 @@ func (l *LocalWorker) MoveToNfsStorage(ctx context.Context, sector abi.SectorID)
 	return true
 }
 
-func movetocache(id int ,lock bool,movecache string)  {
+
+func movetocache(id int ,lock bool ,movecache string)  {
 	if lock {
 		setAffinity(id)
 	}
@@ -626,6 +629,11 @@ func movetosealed(id int,lock bool,movesealed string)  {
 	exec.Command("bash", "-c", movesealed)
 	wg.Done()
 }
+*/
+
+
+
+
 
 // WaitQuiet blocks as long as there are tasks running
 func (l *LocalWorker) WaitQuiet() {

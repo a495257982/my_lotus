@@ -635,7 +635,8 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 	if err != nil {
 		return  err
 	}
-
+/*     a:=m.localStore.Paths[stores.ID(ids.Sealed)]
+	 b:=m.localStore.Paths[stores.ID(ide.Cache)]*/
 	si,err:=m.index.StorageFindSector(ctx,sector.ID,storiface.FTSealed,0,false)
 	for _, info := range si {
 		for _, url := range info.URLs{
@@ -655,7 +656,6 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		}
 	}
 
-
 	m.index.StorageDeclareSector(ctx, stores.ID(ids.Sealed),sector.ID,2,true)
 	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
 
@@ -670,7 +670,6 @@ func FetchToNfsStorage(sector storage.SectorRef,URL string,a string,b string) bo
 	f1.Write([]byte("隔开"))
 	f1.Write([]byte(b))
 	defer f1.Close()
-	fmt.Println(a,b)
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
 	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
