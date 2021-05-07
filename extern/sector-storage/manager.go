@@ -626,12 +626,12 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		bestID = ID(si1.ID)
 		break
 	}*/
-	_, ids, err := m.storage.AcquireSector(ctx,sector,0,2,"storage","aaa")
+	_, _, err = m.storage.AcquireSector(ctx, sector, 0, 2, "storage", "aaa")
 	if err != nil {
 		return  err
 	}
 
-	_, ide, err := m.storage.AcquireSector(ctx,sector,0,4,"storage","aaa")
+	_, _, err = m.storage.AcquireSector(ctx, sector, 0, 4, "storage", "aaa")
 	if err != nil {
 		return  err
 	}
@@ -643,7 +643,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			a:=strings.Index(url,"3456")
 			l1:=url[:a]
 			l2:=l1+"3456/rpc/v0"
-			cha:=FetchToNfsStorage(sector,l2,ids.Sealed,ide.Cache)
+			cha:=FetchToNfsStorage(sector,l2)
 			if cha{
 				f,_ := os.Create("success.dat")
 				defer f.Close()
@@ -653,23 +653,55 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 				defer f.Close()
 				_,err=f.Write([]byte("调用失败"))
 			}
+			var Pathid string
+			Pathid=FetchPathID(l2)
+			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,2,true)
+			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,4,true)
+
+
+			f1,_ := os.Create("ab.dat")
+			f1.Write([]byte(Pathid))
+			f1.Write([]byte("隔开"))
+			f1.Write([]byte(Pathid))
+			defer f1.Close()
 		}
 	}
 
-	m.index.StorageDeclareSector(ctx, stores.ID(ids.Sealed),sector.ID,2,true)
-	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
+	/*m.index.StorageDeclareSector(ctx, stores.ID(ids.Sealed),sector.ID,2,true)
+	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)*/
 
 	return nil
 }
 
+func FetchPathID(URL string) string{
+	mapInstance := make(map[string]interface{})
+	mapInstance["jsonrpc"] = "2.0"
+	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
+	mapInstance["params"] = []map[string]interface{}{}
+	mapInstance["id"] = 1
+	jsonStr, err := json.Marshal(mapInstance)
+	if err != nil {
+	}
+	reader := bytes.NewReader(jsonStr)
+	workerstoken:=os.Getenv("WORKERSTOKEN")
+	var bearer = "Bearer " +workerstoken
+	req,err := http.NewRequest("POST", URL, reader)
+	req.Header.Add("Authorization", bearer)
+	req.Header.Set("Content-Type","application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error on response.\n[ERROR] -", err)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	var ac map[string]string
+	json.Unmarshal(body, &ac)
+	return ac["result"]
+}
 
-func FetchToNfsStorage(sector storage.SectorRef,URL string,a string,b string) bool  {
 
-	f1,_ := os.Create("ab.dat")
-	f1.Write([]byte(a))
-	f1.Write([]byte("隔开"))
-	f1.Write([]byte(b))
-	defer f1.Close()
+func FetchToNfsStorage(sector storage.SectorRef,URL string) bool  {
+
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
 	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
