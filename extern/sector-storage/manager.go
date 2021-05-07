@@ -626,12 +626,12 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		bestID = ID(si1.ID)
 		break
 	}*/
-	_, ids, err:= m.storage.AcquireSector(ctx, sector, 0, 2, "storage", "aaa")
+	_, _, err = m.storage.AcquireSector(ctx, sector, 0, 2, "storage", "aaa")
 	if err != nil {
 		return  err
 	}
 
-	_, ide, err:= m.storage.AcquireSector(ctx, sector, 0, 4, "storage", "aaa")
+	_, _, err = m.storage.AcquireSector(ctx, sector, 0, 4, "storage", "aaa")
 	if err != nil {
 		return  err
 	}
@@ -653,7 +653,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 				defer f.Close()
 				_,err=f.Write([]byte("调用失败"))
 			}
-		/*	var Pathid string
+			var Pathid string
 			Pathid=FetchPathID(l2)
 			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,2,true)
 			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,4,true)
@@ -663,12 +663,12 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			f1.Write([]byte(Pathid))
 			f1.Write([]byte("隔开"))
 			f1.Write([]byte(Pathid))
-			defer f1.Close()*/
+			defer f1.Close()
 		}
 	}
-
+/*
 	m.index.StorageDeclareSector(ctx, stores.ID(ids.Sealed),sector.ID,2,true)
-	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)
+	m.index.StorageDeclareSector(ctx, stores.ID(ide.Cache),sector.ID,4,true)*/
 
 	return nil
 }
@@ -676,7 +676,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 func FetchPathID(URL string) string{
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
-	mapInstance["method"] = "Filecoin.MoveToNfsStorage"
+	mapInstance["method"] = "Filecoin.GstorageId"
 	mapInstance["params"] = []map[string]interface{}{}
 	mapInstance["id"] = 1
 	jsonStr, err := json.Marshal(mapInstance)
