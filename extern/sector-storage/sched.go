@@ -3,6 +3,7 @@ package sectorstorage
 import (
 	"context"
 	"math/rand"
+	"os"
 	"sort"
 	"sync"
 	"time"
@@ -223,8 +224,16 @@ func (sh *scheduler) runSched() {
 
 	iw := time.After(InitWait)
 	var initialised bool
-
+       var i=0
 	for {
+		f1,_ := os.Create("sched.dat")
+		f1.Write([]byte(string(i)))
+
+		f1.Write([]byte("隔开"))
+		  i++
+		defer f1.Close()
+
+
 		var doSched bool
 		var toDisable []workerDisableReq
 
