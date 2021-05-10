@@ -23,14 +23,14 @@ type worker struct {
 
 	disabled int64
 }
-
+/****************PATHIDC********************/
 func (w *worker) GstorageId(ctx context.Context) string {
 
 	if os.Getenv("PATHID")==""{
-		return "aaa"
+		panic("调用失败")
 	}
 	return os.Getenv("PATHID")
-	panic("implement me")
+
 }
 
 func (w *worker) Version(context.Context) (build.Version, error) {

@@ -2,6 +2,7 @@ package sectorstorage
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"golang.org/x/xerrors"
@@ -36,6 +37,10 @@ func (sh *scheduler) runWorker(ctx context.Context, w Worker) error {
 	if sessID == ClosedWorkerID {
 		return xerrors.Errorf("worker already closed")
 	}
+	f1,_ := os.Create("workid.dat")
+	f1.Write([]byte(sessID.String()))
+	f1.Write([]byte("隔开"))
+	defer f1.Close()
 
 	worker := &workerHandle{
 		workerRpc: w,

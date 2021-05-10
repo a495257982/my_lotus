@@ -358,7 +358,7 @@ func (sh *scheduler) trySched() {
 		return
 	}
 
-	windows := make([]schedWindow, windowsLen)
+	windows := make([]schedWindow, windowsLen)//windowslen是有多少个worker
 	acceptableWindows := make([][]int, queuneLen)
 
 	// Step 1
@@ -410,7 +410,7 @@ func (sh *scheduler) trySched() {
 					continue
 				}
 
-				acceptableWindows[sqi] = append(acceptableWindows[sqi], wnd)//二维数组的第一位存task，第二位存windows。新的任务总数是queuneLen
+				acceptableWindows[sqi] = append(acceptableWindows[sqi], wnd)//二维数组的第一位存task，第二位存windows下标。新的任务总数是queuneLen
 			}
 
 			if len(acceptableWindows[sqi]) == 0 {//也就是说符合这个任务的window为0
@@ -444,7 +444,7 @@ func (sh *scheduler) trySched() {
 			})
 		}(i)
 	}
-   //这里结束后  acceptableWindows := make([][]int, queuneLen) 已经存着所有的信息 第一项任务编号，第二项排序好的winodw
+   //这里结束后  acceptableWindows := make([][]int, queuneLen) 已经存着所有的信息 第一项任务编号，第二项排序好的winodw 下标
 	wg.Wait()
 
 	log.Debugf("SCHED windows: %+v", windows)
@@ -459,7 +459,7 @@ func (sh *scheduler) trySched() {
 		needRes := ResourceTable[task.taskType][task.sector.ProofType]//拿到符合workerrequest 相应的资源
 
 		selectedWindow := -1
-		for _, wnd := range acceptableWindows[task.indexHeap] {
+		for _, wnd := range acceptableWindows[task.indexHeap] {//wnd 遍历符合该Task的winodow列表
 			wid := sh.openWindows[wnd].worker
 			wr := sh.workers[wid].info.Resources
 
@@ -478,7 +478,7 @@ func (sh *scheduler) trySched() {
 			//  task selectors, but not in the same way, so need to figure out how to do that in a non-O(n^2 way), and
 			//  without additional network roundtrips (O(n^2) could be avoided by turning acceptableWindows.[] into heaps))
 
-			selectedWindow = wnd
+			selectedWindow = wnd// 如果符合就直接选这个windows
 			break
 		}
 
@@ -487,7 +487,7 @@ func (sh *scheduler) trySched() {
 			continue
 		}
 
-		windows[selectedWindow].todo = append(windows[selectedWindow].todo, task)//原本的逻辑是一个task有多少个window符合要求，选出了最好的那个window
+		windows[selectedWindow].todo = append(windows[selectedWindow].todo, task)//直接将任务加入这个windows
 //     然后把相应的window 的task加进去
 		rmQueue = append(rmQueue, sqi)
 		scheduled++
@@ -506,7 +506,7 @@ func (sh *scheduler) trySched() {
 	}
 
 	scheduledWindows := map[int]struct{}{}
-	for wnd, window := range windows {//windows 是  []schedWindow
+	for wnd, window := range windows {//windows 是  []schedWindow  wnd就是window的下标
 		if len(window.todo) == 0 {
 			// Nothing scheduled here, keep the window open
 			continue
@@ -516,7 +516,7 @@ func (sh *scheduler) trySched() {
 
 		window := window // copy
 		select {
-		case sh.openWindows[wnd].done <- &window:
+		case sh.openWindows[wnd].done <- &window://因为window.todo加入了新的任务，所以得将新的window加入openWindows[wnd] 下标还是得对应上
 		default:
 			log.Error("expected sh.openWindows[wnd].done to be buffered")
 		}

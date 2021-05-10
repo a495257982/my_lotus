@@ -48,7 +48,7 @@ type WorkerAPI interface {
 	Session(context.Context) (uuid.UUID, error)
 	// panxingchen
 	MoveToNfsStorage         (ctx context.Context, sector abi.SectorID)  bool
-	// panxingchen
+	/****************PATHIDC********************/
 	GstorageId(ctx context.Context)  string
 
 }

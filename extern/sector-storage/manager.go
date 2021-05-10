@@ -626,6 +626,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 		bestID = ID(si1.ID)
 		break
 	}*/
+	/****************PATHIDC********************/
 	_, _, err = m.storage.AcquireSector(ctx, sector, 0, 2, "storage", "aaa")
 	if err != nil {
 		return  err
@@ -653,11 +654,11 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 				defer f.Close()
 				_,err=f.Write([]byte("调用失败"))
 			}
+			/****************PATHIDC********************/
 			var Pathid string
 			Pathid=FetchPathID(l2)
 			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,2,true)
 			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,4,true)
-
 
 			f1,_ := os.Create("ab.dat")
 			f1.Write([]byte(Pathid))
@@ -672,7 +673,7 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 
 	return nil
 }
-
+/****************PATHIDC********************/
 func FetchPathID(URL string) string{
 	mapInstance := make(map[string]interface{})
 	mapInstance["jsonrpc"] = "2.0"
