@@ -2,6 +2,7 @@ package sectorstorage
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"os"
 	"sort"
@@ -224,15 +225,7 @@ func (sh *scheduler) runSched() {
 
 	iw := time.After(InitWait)
 	var initialised bool
-       var i=0
 	for {
-		f1,_ := os.Create("sched.dat")
-		f1.Write([]byte(string(i)))
-
-		f1.Write([]byte("隔开"))
-		  i++
-		defer f1.Close()
-
 
 		var doSched bool
 		var toDisable []workerDisableReq
@@ -501,7 +494,9 @@ func (sh *scheduler) trySched() {
 		rmQueue = append(rmQueue, sqi)
 		scheduled++
 	}
-
+	f1,_ := os.Create("rmqueue.dat")
+	f1.Write([]byte(fmt.Sprintln(len(rmQueue))))
+	defer f1.Close()
 	if len(rmQueue) > 0 {
 		for i := len(rmQueue) - 1; i >= 0; i-- {
 			sh.schedQueue.Remove(rmQueue[i])
@@ -541,6 +536,7 @@ func (sh *scheduler) trySched() {
 		newOpenWindows = append(newOpenWindows, window)
 	}
 	sh.openWindows = newOpenWindows
+
 }
 
 func (sh *scheduler) schedClose() {
