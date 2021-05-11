@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"reflect"
@@ -82,15 +81,16 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		acceptTasks[taskType] = struct{}{}
 	}
 
-	workid, err := ioutil.ReadFile("/data/sdb/lotus-user-1/.lotusworker/workid.dat")
+/*	workid, err := ioutil.ReadFile("/data/sdb/lotus-user-1/.lotusworker/workid.dat")
 	if err != nil {
 		workid= []byte(uuid.New().String())
 		f1,_ := os.Create("newid.dat")
 		f1.Write(workid)
 		defer f1.Close()
+
 	}
 	id,err:=uuid.FromBytes(workid)
-
+*/
 	w := &LocalWorker{
 		storage:    store,
 		localStore: local,
@@ -104,7 +104,7 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		executor:    executor,
 		noSwap:      wcfg.NoSwap,
 
-		session: id,
+		session: uuid.New(),
 		closing: make(chan struct{}),
 	}
 
