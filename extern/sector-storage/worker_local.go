@@ -89,7 +89,7 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		f1.Write(workid)
 		defer f1.Close()
 	}
-	woid, _ := uuid.FromBytes(workid)
+	woid, _ := uuid.ParseBytes(workid)
 
 	w := &LocalWorker{
 		storage:    store,
