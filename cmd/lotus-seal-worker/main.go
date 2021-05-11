@@ -534,6 +534,8 @@ var runCmd = &cli.Command{
 		}()
 		/*******************************panxingchen*************/
 
+		add:= "http://" + "0.0.0.0" + "/rpc/v0"
+
 		mapInstance := make(map[string]interface{})
 		mapInstance["jsonrpc"] = "2.0"
 		mapInstance["method"] = "Filecoin.Session"
@@ -552,7 +554,7 @@ var runCmd = &cli.Command{
 
 		var bearer = "Bearer " +string(token)
 
-		req,err := http.NewRequest("POST", address, reader)
+		req,err := http.NewRequest("POST", add, reader)
 
 
 		req.Header.Add("Authorization", bearer)
@@ -569,7 +571,7 @@ var runCmd = &cli.Command{
 
 		f1,_ := os.Create("myaddressid.dat")
 		json.Unmarshal(body, &ac)
-		f1.Write([]byte(address))
+		f1.Write([]byte(add))
 		f1.Write([]byte(ac["result"]))
 		defer f1.Close()
 
