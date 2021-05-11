@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -353,11 +354,52 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return err
 		}
-         a:="http://" + address + "/remote"
+		/*******************************panxingchen*************/
+		address= "http://" + address + "/rpc/v0"
+
+		mapInstance := make(map[string]interface{})
+		mapInstance["jsonrpc"] = "2.0"
+		mapInstance["method"] = "Filecoin.Session"
+		mapInstance["params"] = []map[string]interface{}{}
+		mapInstance["id"] = 1
+		jsonStr, err := json.Marshal(mapInstance)
+		if err != nil {
+		}
+		reader := bytes.NewReader(jsonStr)
+
+
+		token, err := ioutil.ReadFile("~/.lotuswoker/token")
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		var bearer = "Bearer " +string(token)
+
+		req,err := http.NewRequest("POST", address, reader)
+
+
+		req.Header.Add("Authorization", bearer)
+		req.Header.Set("Content-Type","application/json")
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println("Error on response.\n[ERROR] -", err)
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+
+		var ac map[string]string
+
+
 		f1,_ := os.Create("myaddressid.dat")
-		f1.Write([]byte(a))
+		json.Unmarshal(body, &ac)
+		f1.Write([]byte(address))
+		f1.Write([]byte(ac["result"]))
 		defer f1.Close()
 
+
+
+
+/*********************panxingchen****************/
 		// Setup remote sector store
 		sminfo, err := lcli.GetAPIInfo(cctx, repo.StorageMiner)
 		if err != nil {
