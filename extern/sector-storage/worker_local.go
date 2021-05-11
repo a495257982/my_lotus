@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"reflect"
@@ -81,6 +82,15 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		acceptTasks[taskType] = struct{}{}
 	}
 
+	workid, err := ioutil.ReadFile("/data/sdb/lotus-user-1/.lotusworker/workid.dat")
+	if err != nil {
+		workid= []byte(uuid.New().String())
+		f1,_ := os.Create("newid.dat")
+		f1.Write(workid)
+		defer f1.Close()
+	}git
+	id,err:=uuid.FromBytes(workid)
+
 	w := &LocalWorker{
 		storage:    store,
 		localStore: local,
@@ -94,7 +104,7 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		executor:    executor,
 		noSwap:      wcfg.NoSwap,
 
-		session: uuid.New(),
+		session: id,
 		closing: make(chan struct{}),
 	}
 
@@ -107,11 +117,6 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		log.Errorf("reading unfinished tasks: %+v", err)
 		return w
 	}
-
-	f1,_ := os.Create("newid.dat")
-	f1.Write([]byte(w.session.String()))
-	defer f1.Close()
-
 
 
 	go func() {
