@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -182,6 +181,7 @@ var runCmd = &cli.Command{
 		ctx := lcli.ReqContext(cctx)
 
 		var nodeApi api.StorageMiner
+		var wor api.WorkerAPI
 		var closer func()
 		var err error
 		for {
@@ -458,7 +458,13 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return xerrors.Errorf("getting miner session: %w", err)
 		}
+        workersession,_:=wor.Session(ctx)
 
+
+		f1,_ := os.Create("worksession.dat")
+		work1:=workersession.String()
+		f1.Write([]byte(work1))
+		defer f1.Close()
 
 
 		waitQuietCh := func() chan struct{} {
@@ -532,9 +538,10 @@ var runCmd = &cli.Command{
 				redeclareStorage = true
 			}
 		}()
+		return srv.Serve(nl)
 		/*******************************panxingchen*************/
 
-		add:= "http://" + "0.0.0.0" + "/rpc/v0"
+		/*add:= "http://" + "0.0.0.0" + "/rpc/v0"
 
 		mapInstance := make(map[string]interface{})
 		mapInstance["jsonrpc"] = "2.0"
@@ -568,16 +575,14 @@ var runCmd = &cli.Command{
 
 		var ac map[string]string
 
-
-		f1,_ := os.Create("myaddressid.dat")
+		f1, _ = os.Create("myaddressid.dat")
 		json.Unmarshal(body, &ac)
 		f1.Write([]byte(add))
 		f1.Write([]byte(ac["result"]))
-		defer f1.Close()
+		defer f1.Close()*/
 
 
 		/*********************panxingchen****************/
-		return srv.Serve(nl)
 	},
 }
 
