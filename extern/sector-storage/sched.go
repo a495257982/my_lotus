@@ -536,7 +536,7 @@ func (sh *scheduler) trySched() {
 	}
 	sh.openWindows = newOpenWindows
 	/********************************/
-	filePath := "~/file/abc.dat"
+	filePath := "abc.dat"
 	file, err := os.OpenFile(filePath, os.O_WRONLY | os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil{
 
@@ -567,7 +567,6 @@ func (sh *scheduler) trySched() {
 	//Flush将缓存的文件真正写入到文件中
 	write.Flush()
 	/********************************/
-
 }
 
 func (sh *scheduler) schedClose() {
