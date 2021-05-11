@@ -1,8 +1,8 @@
 package sectorstorage
 
 import (
+	"bufio"
 	"context"
-	"fmt"
 	"math/rand"
 	"os"
 	"sort"
@@ -266,6 +266,7 @@ func (sh *scheduler) runSched() {
 				select {
 				case <-sh.workerChange:
 				case dreq := <-sh.workerDisable:
+
 					toDisable = append(toDisable, dreq)
 				case req := <-sh.schedule:
 					sh.schedQueue.Push(req)
@@ -494,9 +495,7 @@ func (sh *scheduler) trySched() {
 		rmQueue = append(rmQueue, sqi)
 		scheduled++
 	}
-	f1,_ := os.Create("rmqueue.dat")
-	f1.Write([]byte(fmt.Sprintln(len(rmQueue))))
-	defer f1.Close()
+
 	if len(rmQueue) > 0 {
 		for i := len(rmQueue) - 1; i >= 0; i-- {
 			sh.schedQueue.Remove(rmQueue[i])
@@ -536,6 +535,26 @@ func (sh *scheduler) trySched() {
 		newOpenWindows = append(newOpenWindows, window)
 	}
 	sh.openWindows = newOpenWindows
+	/********************************/
+	filePath := "~/file/abc.dat"
+	file, err := os.OpenFile(filePath, os.O_WRONLY | os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil{
+
+	}
+	defer file.Close()
+	write := bufio.NewWriter(file)
+
+	for index,id:=range sh.openWindows{
+
+		write.WriteString(string(index))
+		write.WriteString("---")
+		write.WriteString(id.worker.String())
+		write.WriteString("---")
+
+	}
+	//Flush将缓存的文件真正写入到文件中
+	write.Flush()
+	/********************************/
 
 }
 

@@ -175,7 +175,6 @@ var runCmd = &cli.Command{
 				return xerrors.Errorf("could not set no-gpu env: %+v", err)
 			}
 		}
-
 		// Connect to storage-miner
 		ctx := lcli.ReqContext(cctx)
 
@@ -354,6 +353,10 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return err
 		}
+         a:="http://" + address + "/remote"
+		f1,_ := os.Create("myaddressid.dat")
+		f1.Write([]byte(a))
+		defer f1.Close()
 
 		// Setup remote sector store
 		sminfo, err := lcli.GetAPIInfo(cctx, repo.StorageMiner)
@@ -457,6 +460,8 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return xerrors.Errorf("getting miner session: %w", err)
 		}
+
+
 
 		waitQuietCh := func() chan struct{} {
 			out := make(chan struct{})
