@@ -534,8 +534,6 @@ var runCmd = &cli.Command{
 		}()
 		/*******************************panxingchen*************/
 
-		address = "http://" + address + "/rpc/v0"
-
 		mapInstance := make(map[string]interface{})
 		mapInstance["jsonrpc"] = "2.0"
 		mapInstance["method"] = "Filecoin.Session"
