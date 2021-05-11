@@ -89,7 +89,7 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		f1.Write(workid)
 		defer f1.Close()
 	}
-	_, _ = uuid.FromBytes(workid)
+	woid, _ := uuid.FromBytes(workid)
 
 	w := &LocalWorker{
 		storage:    store,
@@ -104,7 +104,7 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		executor:    executor,
 		noSwap:      wcfg.NoSwap,
 
-		session: uuid.New(),
+		session: woid,
 		closing: make(chan struct{}),
 	}
 
