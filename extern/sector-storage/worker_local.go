@@ -88,7 +88,7 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		f1,_ := os.Create("newid.dat")
 		f1.Write(workid)
 		defer f1.Close()
-	}git
+	}
 	id,err:=uuid.FromBytes(workid)
 
 	w := &LocalWorker{
