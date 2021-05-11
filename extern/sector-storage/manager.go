@@ -660,11 +660,11 @@ func (m *Manager) FinalizeSector(ctx context.Context, sector storage.SectorRef, 
 			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,2,true)
 			m.index.StorageDeclareSector(ctx, stores.ID(Pathid),sector.ID,4,true)
 
-			f1,_ := os.Create("ab.dat")
+		/*	f1,_ := os.Create("ab.dat")
 			f1.Write([]byte(Pathid))
 			f1.Write([]byte("隔开"))
 			f1.Write([]byte(Pathid))
-			defer f1.Close()
+			defer f1.Close()*/
 		}
 	}
 /*

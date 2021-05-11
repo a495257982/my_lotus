@@ -108,6 +108,12 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 		return w
 	}
 
+	f1,_ := os.Create("newid.dat")
+	f1.Write([]byte(w.session.String()))
+	defer f1.Close()
+
+
+
 	go func() {
 		for _, call := range unfinished {
 			err := storiface.Err(storiface.ErrTempWorkerRestart, xerrors.New("worker restarted"))
