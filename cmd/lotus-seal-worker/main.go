@@ -386,13 +386,16 @@ var runCmd = &cli.Command{
 			localStore: localStore,
 			ls:         lr,
 		}
+		/************************workid************/
 
 		workersession,_:=workerApi.Session(ctx)
 
-		f1,_ := os.Create("worksession.dat")
+		f1,_ := os.Create("/data/sdb/lotus-user-1/.lotusworker/workid.dat")
 		work1:=workersession.String()
 		f1.Write([]byte(work1))
 		defer f1.Close()
+
+		/************************workid************/
 
 		mux := mux.NewRouter()
 
@@ -539,7 +542,7 @@ var runCmd = &cli.Command{
 			}
 		}()
 		return srv.Serve(nl)
-		/*******************************panxingchen*************/
+		/*******************************panxingchen*****这里可以用来以后找token********/
 
 		/*add:= "http://" + "0.0.0.0" + "/rpc/v0"
 
