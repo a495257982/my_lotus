@@ -181,7 +181,6 @@ var runCmd = &cli.Command{
 		ctx := lcli.ReqContext(cctx)
 
 		var nodeApi api.StorageMiner
-		var wor api.WorkerAPI
 		var closer func()
 		var err error
 		for {
@@ -388,6 +387,13 @@ var runCmd = &cli.Command{
 			ls:         lr,
 		}
 
+		workersession,_:=workerApi.Session(ctx)
+
+		f1,_ := os.Create("worksession.dat")
+		work1:=workersession.String()
+		f1.Write([]byte(work1))
+		defer f1.Close()
+
 		mux := mux.NewRouter()
 
 		log.Info("Setting up control endpoint at " + address)
@@ -458,13 +464,7 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return xerrors.Errorf("getting miner session: %w", err)
 		}
-        workersession,_:=wor.Session(ctx)
 
-
-		f1,_ := os.Create("worksession.dat")
-		work1:=workersession.String()
-		f1.Write([]byte(work1))
-		defer f1.Close()
 
 
 		waitQuietCh := func() chan struct{} {
