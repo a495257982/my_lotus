@@ -550,6 +550,18 @@ func (sh *scheduler) trySched() {
 		write.WriteString("---")
 		write.WriteString(id.worker.String())
 		write.WriteString("---")
+		for i:=0;i<len(id.done);i++{
+			red:=<-id.done
+			for ie,ed :=range red.todo{
+				write.WriteString("下标 ")
+				write.WriteString(string(ie))
+				write.WriteString("workerrequest下标 ")
+				write.WriteString(string(ed.index))
+				write.WriteString("sector 号")
+				write.WriteString(string(ed.sector.ID.Number))
+				write.WriteString("\n")
+			}
+		}
 
 	}
 	//Flush将缓存的文件真正写入到文件中
