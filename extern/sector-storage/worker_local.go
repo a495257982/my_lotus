@@ -85,10 +85,11 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, store stores.Store
 	workid, err := ioutil.ReadFile("/data/sdb/lotus-user-1/.lotusworker/workid.dat")
 	if err != nil {
 		workid= []byte(uuid.New().String())
-		/*
+
 		f1,_ := os.Create("/data/sdb/lotus-user-1/.lotusworker/workid.dat")
-		f1.Write(workid)
-		defer f1.Close()*/
+		/*
+		f1.Write(workid)*/
+		defer f1.Close()
 
 	}
 	_, _ = uuid.FromBytes(workid)
